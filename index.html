@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Orbium VPN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg:#06070f;
+    --accent:#5b8cff; --accent-2:#46e6ff; --green:#3ce6a6; --amber:#f5b545; --violet:#9a6bff; --magenta:#ff5db1;
+    --txt:#f3f5fc; --dim:#a4abc6; --mut:#6b7390;
+    --glass:rgba(255,255,255,.05); --glass-2:rgba(255,255,255,.08);
+    --hair:rgba(255,255,255,.10); --hair-2:rgba(255,255,255,.16);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#03040a;color:var(--txt);
+    min-height:100dvh;display:flex;align-items:center;justify-content:center;letter-spacing:-.01em;}
+  .frame{position:relative;width:420px;height:910px;border-radius:30px;overflow:hidden;background:var(--bg);
+    box-shadow:0 50px 130px rgba(0,0,0,.8);}
+  @media(max-width:460px){.frame{width:100vw;height:100dvh;border-radius:0;box-shadow:none;}}
+
+  .tg{position:relative;z-index:6;height:50px;display:flex;align-items:center;gap:11px;padding:0 16px;background:#0a0b15;}
+  .tg .x{width:21px;height:21px;color:#fff;}
+  .tg .name{display:flex;align-items:center;gap:8px;background:#1a1c29;border-radius:999px;padding:5px 13px 5px 6px;font-size:13.5px;font-weight:600;}
+  .tg .name .lg{width:21px;height:21px;border-radius:50%;background:radial-gradient(60% 60% at 36% 30%,#e2f2ff,#46e6ff 24%,#5b8cff 50%,#9a6bff 74%,#241a4e);}
+  .tg .dots{margin-left:auto;color:#fff;width:21px;height:21px;}
+
+  .app{position:absolute;left:0;right:0;top:50px;bottom:0;overflow:hidden;background:var(--bg);}
+  .app::before{content:"";position:absolute;left:0;right:0;top:0;height:55%;z-index:0;
+    background:url("ambient.png") top center / cover no-repeat;opacity:.8;
+    -webkit-mask:linear-gradient(180deg,#000 50%,transparent);mask:linear-gradient(180deg,#000 50%,transparent);}
+  .veil{position:absolute;left:0;right:0;top:0;height:170px;z:1;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(3,4,10,.5),transparent);}
+
+  .scroll{position:relative;z-index:2;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    padding:18px 20px calc(var(--safe-bot) + 104px);}
+
+  /* views */
+  .view{display:none;}
+  .view.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  /* header (shared) */
+  .head{display:flex;align-items:center;gap:12px;margin:4px 0 2px;}
+  .orb{width:42px;height:42px;border-radius:50%;flex:0 0 auto;position:relative;
+    background:radial-gradient(60% 60% at 36% 30%,#e2f2ff,#46e6ff 24%,#5b8cff 50%,#9a6bff 74%,#241a4e);
+    box-shadow:0 5px 16px rgba(91,140,255,.5),inset 0 1px 2px rgba(255,255,255,.6);}
+  .orb::after{content:"";position:absolute;top:7px;left:11px;width:12px;height:6px;border-radius:50%;background:rgba(255,255,255,.7);filter:blur(.5px);transform:rotate(-20deg);}
+  .head .ttl{font-size:19px;font-weight:800;letter-spacing:.01em;}
+  .head .uchip{margin-left:auto;display:flex;align-items:center;gap:6px;background:var(--glass);border:1px solid var(--hair);
+    border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--dim);}
+  .head .uchip svg{width:15px;height:15px;}
+  .divider{height:1px;background:var(--hair);margin:15px 0 17px;}
+  .vtitle{font-size:24px;font-weight:800;letter-spacing:-.02em;margin:2px 0 4px;}
+  .vsub{font-size:14px;color:var(--dim);margin-bottom:20px;}
+
+  /* status card */
+  .status{border-radius:20px;border:1px solid var(--hair);padding:16px;background:var(--glass);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 16px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);}
+  .status .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .act{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--green);}
+  .act .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+  .badge{display:flex;align-items:center;gap:5px;background:rgba(245,181,69,.12);border:1px solid rgba(245,181,69,.32);
+    color:var(--amber);font-size:12px;font-weight:700;border-radius:999px;padding:5px 11px;}
+  .badge svg{width:13px;height:13px;}
+  .sublink{display:flex;align-items:center;gap:11px;background:rgba(0,0,0,.3);border:1px solid var(--hair);border-radius:14px;padding:11px 12px;}
+  .sublink .key{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;background:rgba(91,140,255,.16);border:1px solid rgba(91,140,255,.26);}
+  .sublink .key svg{width:17px;height:17px;color:var(--accent);}
+  .sublink .url{flex:1;min-width:0;font-size:13.5px;color:var(--txt);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sublink .copy{width:38px;height:38px;border-radius:10px;border:none;background:transparent;cursor:pointer;display:grid;place-items:center;color:var(--mut);flex:0 0 auto;}
+  .sublink .copy svg{width:18px;height:18px;}.sublink .copy:active{background:rgba(255,255,255,.07);}
+  .left{display:flex;align-items:center;gap:7px;margin-top:13px;font-size:13px;color:var(--dim);}
+  .left svg{width:15px;height:15px;color:var(--mut);}.left b{color:var(--txt);font-weight:700;}
+
+  .sec{display:flex;align-items:center;gap:12px;margin:24px 0 15px;}
+  .sec .sic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--glass);border:1px solid var(--hair);flex:0 0 auto;}
+  .sec .sic svg{width:20px;height:20px;color:var(--txt);}
+  .sec .st{font-size:18px;font-weight:800;}
+  .platform{margin-left:auto;display:flex;align-items:center;gap:9px;background:var(--glass);border:1px solid var(--hair-2);
+    border-radius:13px;padding:10px 13px;font-size:14px;font-weight:600;color:var(--txt);cursor:pointer;}
+  .platform .os{width:16px;height:16px;color:var(--accent-2);}.platform .cv{width:15px;height:15px;color:var(--mut);}
+
+  .tabs{display:flex;background:var(--glass);border:1px solid var(--hair);border-radius:16px;padding:5px;margin-bottom:22px;}
+  .tabs button{flex:1;height:44px;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;background:transparent;color:var(--mut);transition:all .15s;}
+  .tabs button.active{background:#fff;color:#0c1020;box-shadow:0 4px 12px rgba(0,0,0,.35);}
+
+  .step{display:flex;gap:14px;}
+  .num{display:flex;flex-direction:column;align-items:center;flex:0 0 auto;}
+  .num .ring{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(91,140,255,.14);border:1px solid rgba(91,140,255,.3);color:var(--accent);}
+  .num .ring svg{width:17px;height:17px;}
+  .num .line{flex:1;width:2px;background:linear-gradient(var(--hair),transparent);margin-top:6px;min-height:20px;}
+  .step .body{flex:1;padding-bottom:24px;}
+  .step .body h3{font-size:16px;font-weight:800;margin-bottom:7px;}
+  .step .body p{font-size:14px;line-height:1.55;color:var(--dim);margin-bottom:13px;}
+  .step .body p a{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
+  .callout{display:flex;gap:10px;align-items:flex-start;background:rgba(245,181,69,.08);border:1px solid rgba(245,181,69,.24);border-radius:13px;padding:12px 13px;margin-bottom:13px;}
+  .callout svg{width:18px;height:18px;color:var(--amber);flex:0 0 auto;margin-top:1px;}
+  .callout span{font-size:13.5px;line-height:1.5;color:#f3d9a8;}
+  .btn{width:100%;height:52px;border-radius:14px;border:1px solid var(--hair-2);cursor:pointer;font-family:inherit;background:var(--glass-2);color:var(--txt);
+    font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .15s;}
+  .btn svg{width:18px;height:18px;}.btn:active{background:rgba(255,255,255,.12);}
+  .btn.primary{background:linear-gradient(180deg,var(--accent),#3f74ee);border-color:transparent;color:#fff;box-shadow:0 12px 28px rgba(91,140,255,.4);}
+
+  /* plans */
+  .plan{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:18px;border:1px solid var(--hair);background:var(--glass);
+    margin-bottom:11px;cursor:pointer;position:relative;transition:border-color .15s,background .15s;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
+  .plan.sel{border-color:rgba(91,140,255,.7);background:rgba(91,140,255,.08);box-shadow:0 0 0 1px rgba(91,140,255,.5),0 14px 34px rgba(91,140,255,.18);}
+  .plan .radio{width:22px;height:22px;border-radius:50%;border:2px solid var(--mut);flex:0 0 auto;display:grid;place-items:center;}
+  .plan.sel .radio{border-color:var(--accent);}
+  .plan.sel .radio::after{content:"";width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);}
+  .plan .pn{flex:1;}
+  .plan .pn .t{font-size:15.5px;font-weight:700;}
+  .plan .pn .s{font-size:12.5px;color:var(--mut);margin-top:2px;}
+  .plan .pr{text-align:right;}
+  .plan .pr .p{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .plan .pr .o{font-size:12px;color:var(--mut);text-decoration:line-through;}
+  .plan .tagpop{position:absolute;top:-9px;right:14px;background:linear-gradient(90deg,var(--violet),var(--accent));color:#fff;
+    font-size:10.5px;font-weight:800;letter-spacing:.05em;padding:3px 9px;border-radius:999px;text-transform:uppercase;}
+  .disc{background:rgba(60,230,166,.14);color:var(--green);font-size:11px;font-weight:700;border-radius:7px;padding:2px 7px;display:inline-block;margin-top:4px;}
+
+  .incl{border-radius:18px;border:1px solid var(--hair);background:var(--glass);padding:16px;margin:18px 0;}
+  .incl h4{font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-bottom:13px;}
+  .incl .it{display:flex;align-items:center;gap:11px;font-size:14px;padding:7px 0;}
+  .incl .it svg{width:18px;height:18px;color:var(--green);flex:0 0 auto;}
+
+  /* referral */
+  .refhero{border-radius:22px;padding:22px;text-align:center;position:relative;overflow:hidden;
+    background:linear-gradient(150deg,rgba(154,107,255,.22),rgba(91,140,255,.14),rgba(70,230,255,.10));
+    border:1px solid var(--hair-2);box-shadow:0 18px 44px rgba(0,0,0,.4);}
+  .refhero .big{font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1;
+    background:linear-gradient(90deg,#fff,#c5d4ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .refhero .cap{font-size:14px;color:var(--dim);margin-top:8px;}
+  .reflink{display:flex;align-items:center;gap:11px;background:rgba(0,0,0,.3);border:1px solid var(--hair);border-radius:14px;padding:12px;margin:16px 0;}
+  .reflink .u{flex:1;min-width:0;font-size:13px;font-family:ui-monospace,Menlo,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--txt);}
+  .reflink button{width:38px;height:38px;border-radius:10px;border:none;background:transparent;color:var(--mut);cursor:pointer;display:grid;place-items:center;}
+  .reflink button svg{width:18px;height:18px;}
+  .rstats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+  .rstat{border-radius:16px;border:1px solid var(--hair);background:var(--glass);padding:15px 16px;}
+  .rstat .k{font-size:12px;color:var(--mut);font-weight:500;}
+  .rstat .v{font-size:24px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums;}
+
+  /* more list */
+  .list{border-radius:18px;border:1px solid var(--hair);background:var(--glass);overflow:hidden;}
+  .lrow{display:flex;align-items:center;gap:14px;padding:15px 16px;cursor:pointer;border-bottom:1px solid var(--hair);}
+  .lrow:last-child{border-bottom:none;}
+  .lrow .li{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--glass-2);border:1px solid var(--hair);flex:0 0 auto;color:var(--dim);}
+  .lrow .li svg{width:18px;height:18px;}
+  .lrow .lt{flex:1;font-size:15px;font-weight:600;}
+  .lrow .lc{color:var(--mut);}.lrow .lc svg{width:18px;height:18px;}
+
+  /* bottom nav */
+  .nav{position:absolute;left:16px;right:16px;bottom:calc(var(--safe-bot) + 16px);z-index:6;height:68px;border-radius:22px;
+    background:rgba(12,14,24,.8);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--hair);
+    box-shadow:0 20px 48px rgba(0,0,0,.6);display:flex;padding:0 6px;}
+  .nav button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;color:var(--mut);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:10.5px;font-weight:600;transition:color .15s;}
+  .nav button svg{width:22px;height:22px;}
+  .nav button.active{color:var(--accent);}
+  .nav button.active svg{filter:drop-shadow(0 0 6px rgba(91,140,255,.5));}
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="tg">
+      <svg class="x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <div class="name"><span class="lg"></span>Orbium VPN</div>
+      <svg class="dots" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+    </div>
+
+    <div class="app" id="app">
+      <div class="veil"></div>
+      <div class="scroll">
+
+        <!-- ===== УСТАНОВКА ===== -->
+        <section class="view active" id="v-install">
+          <div class="head">
+            <div class="orb"></div>
+            <div class="ttl">ORBIUM VPN</div>
+            <div class="uchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>@Orbium_1</div>
+          </div>
+          <div class="divider"></div>
+
+          <div class="status">
+            <div class="top">
+              <div class="act"><span class="dot"></span>АКТИВЕН</div>
+              <div class="badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9l-4.5 3.3L16.7 18 12 14.7 7.3 18l1.7-5.7L4.5 9l5.6-1.4z"/></svg>free</div>
+            </div>
+            <div class="sublink">
+              <span class="key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2"/><path d="m16 6 3 3"/><path d="m18 8 2-2"/></svg></span>
+              <span class="url" id="suburl">https://orbium.app/sub/dGdfODYwNjc5MjY5...</span>
+              <button class="copy" id="copyBtn" aria-label="Скопировать"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            </div>
+            <div class="left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>Осталось: <b>0д 11ч 59м</b></div>
+          </div>
+
+          <div class="sec">
+            <div class="sic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <div class="st">Установка</div>
+            <button class="platform"><svg class="os" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.5V11H3z M11.5 4.3 21 3v8h-9.5z M3 12h7.5v6.5L3 17.5z M11.5 12H21v9l-9.5-1.3z"/></svg>Windows<svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          </div>
+
+          <div class="tabs">
+            <button class="active" data-tab="Happ">Happ</button>
+            <button data-tab="V2rayTun">V2rayTun</button>
+          </div>
+
+          <div class="step">
+            <div class="num"><div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="line"></div></div>
+            <div class="body">
+              <h3>Установите и откройте <span class="cn">Happ</span></h3>
+              <p>Скачайте <span class="cn">Happ</span> с официального сайта и установите приложение. После установки запустите его от имени администратора.</p>
+              <div class="callout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>Игнорируйте уведомления от антивируса — это нормально для VPN-программ.</span></div>
+              <button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать <span class="cn">Happ</span></button>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num"><div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div></div>
+            <div class="body">
+              <h3>Добавьте ключ</h3>
+              <p>Нажмите кнопку ниже — <span class="cn">Happ</span> откроется, и ключ добавится автоматически.</p>
+              <p>Если ключ не добавился, <a href="#" id="copyLink">скопируйте ссылку</a> и добавьте вручную: «+» → «Из буфера обмена».</p>
+              <button class="btn primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить ключ</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== ТАРИФЫ ===== -->
+        <section class="view" id="v-tariffs">
+          <div class="vtitle">Тарифы</div>
+          <div class="vsub">Безлимит, все страны, до 5 устройств.</div>
+
+          <div class="plan" data-price="249">
+            <span class="radio"></span>
+            <div class="pn"><div class="t">1 месяц</div><div class="s">249 ₽ / месяц</div></div>
+            <div class="pr"><div class="p">249 ₽</div></div>
+          </div>
+          <div class="plan" data-price="689">
+            <span class="radio"></span>
+            <div class="pn"><div class="t">3 месяца</div><div class="s">230 ₽ / месяц</div><span class="disc">−8%</span></div>
+            <div class="pr"><div class="p">689 ₽</div><div class="o">747 ₽</div></div>
+          </div>
+          <div class="plan sel" data-price="1259">
+            <span class="tagpop">популярный</span>
+            <span class="radio"></span>
+            <div class="pn"><div class="t">6 месяцев</div><div class="s">210 ₽ / месяц</div><span class="disc">−16%</span></div>
+            <div class="pr"><div class="p">1 259 ₽</div><div class="o">1 494 ₽</div></div>
+          </div>
+          <div class="plan" data-price="2299">
+            <span class="radio"></span>
+            <div class="pn"><div class="t">1 год</div><div class="s">192 ₽ / месяц</div><span class="disc">−23%</span></div>
+            <div class="pr"><div class="p">2 299 ₽</div><div class="o">2 988 ₽</div></div>
+          </div>
+
+          <div class="incl">
+            <h4>Что входит</h4>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Скорость до 1 Гбит/с</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Без лимита трафика</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Все страны на выбор</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Шифрование VLESS + Reality</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>До 5 устройств одновременно</div>
+          </div>
+
+          <button class="btn primary" id="payBtn">Оформить за <span id="payPrice">1 259 ₽</span></button>
+        </section>
+
+        <!-- ===== РЕФЕРАЛЫ ===== -->
+        <section class="view" id="v-ref">
+          <div class="vtitle">Рефералы</div>
+          <div class="vsub">Приглашай друзей — получай с каждой оплаты.</div>
+
+          <div class="refhero">
+            <div class="big">10%</div>
+            <div class="cap">кэшбек с каждой оплаты приглашённого друга — навсегда</div>
+          </div>
+
+          <div class="reflink">
+            <span class="u" id="refurl">t.me/Orbium_77bot?start=ref_8421</span>
+            <button id="refCopy" aria-label="Скопировать ссылку"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+          </div>
+
+          <div class="rstats">
+            <div class="rstat"><div class="k">Приглашено</div><div class="v">0</div></div>
+            <div class="rstat"><div class="k">Заработано</div><div class="v">0 ₽</div></div>
+          </div>
+
+          <div class="incl">
+            <h4>Как это работает</h4>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Делишься своей ссылкой с другом</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Друг оформляет любой тариф</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>10% от суммы падает тебе на баланс</div>
+          </div>
+
+          <button class="btn primary">Вывести (от 2 000 ₽)</button>
+        </section>
+
+        <!-- ===== ЕЩЁ ===== -->
+        <section class="view" id="v-more">
+          <div class="vtitle">Ещё</div>
+          <div class="vsub">Помощь, документы и настройки.</div>
+
+          <div class="list">
+            <div class="lrow"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span class="lt">Поддержка</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            <div class="lrow"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="lt">Инструкция</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            <div class="lrow"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="lt">О сервисе</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            <div class="lrow"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="lt">Политика конфиденциальности</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            <div class="lrow"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="lt">Пользовательское соглашение</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+            <div class="lrow"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/></svg></span><span class="lt">Язык · Русский</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="active" data-view="v-install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.2 7.8 13.4 13.4 7.8 16.2 10.6 10.6 16.2 7.8"/></svg>Установка</button>
+      <button data-view="v-tariffs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2 0-2.8a2 2 0 0 0-3 0z"/><path d="M12 15 9 12c.5-3.5 2.5-7 8-9 .5 5.5-3 7.5-6 8z"/><path d="M9 12H4s.5-2.8 2-4c1.7-1.3 5 0 5 0"/><path d="M12 15v5s2.8-.5 4-2c1.3-1.7 0-5 0-5"/></svg>Тарифы</button>
+      <button data-view="v-ref"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Рефералы</button>
+      <button data-view="v-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>Ещё</button>
+    </nav>
+  </div>
+
+<script>
+  try{const tg=window.Telegram?.WebApp;if(tg){tg.ready();tg.expand();}}catch(e){}
+
+  // nav view switching
+  const views=document.querySelectorAll('.view');
+  document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    views.forEach(v=>v.classList.toggle('active',v.id===b.dataset.view));
+    document.querySelector('.scroll').scrollTop=0;
+    try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
+  }));
+
+  // client tabs
+  const cns=document.querySelectorAll('.cn');
+  document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');cns.forEach(c=>c.textContent=b.dataset.tab);
+  }));
+
+  // plan selection
+  const fmt=n=>n.toLocaleString('ru-RU')+' ₽';
+  document.querySelectorAll('.plan').forEach(p=>p.addEventListener('click',()=>{
+    document.querySelectorAll('.plan').forEach(x=>x.classList.remove('sel'));
+    p.classList.add('sel');
+    document.getElementById('payPrice').textContent=fmt(+p.dataset.price);
+    try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
+  }));
+
+  // copy helpers
+  function copyText(text,btn){navigator.clipboard?.writeText(text);
+    try{window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');}catch(e){}
+    if(btn){btn.style.color='#3ce6a6';setTimeout(()=>btn.style.color='',1200);}}
+  document.getElementById('copyBtn').addEventListener('click',e=>copyText(document.getElementById('suburl').textContent,e.currentTarget));
+  document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();copyText(document.getElementById('suburl').textContent);});
+  document.getElementById('refCopy').addEventListener('click',e=>copyText(document.getElementById('refurl').textContent,e.currentTarget));
+</script>
+</body>
+</html>
