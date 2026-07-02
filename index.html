@@ -492,6 +492,24 @@
   let refInvited=0;     // приглашено друзей
   let refEarnedTotal=0; // всего начислено бонусов, ₽
 
+  // ── i18n (RU/EN) — переключение всего интерфейса ──
+  let lang=(function(){try{return localStorage.getItem('orbium_lang')||'ru';}catch(e){return 'ru';}})();
+  function L(ru,en){return lang==='en'?en:ru;}
+  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, все страны, до 5 устройств.": "Unlimited, all countries, up to 5 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "200 ₽ / месяц": "200 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Все страны на выбор": "All countries to choose from", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 5 устройств одновременно": "Up to 5 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite"};
+  const _orig=new WeakMap();
+  function _tnodes(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),a=[],n;while(n=w.nextNode()){if(n.nodeValue&&n.nodeValue.trim())a.push(n);}return a;}
+  function applyLang(l){
+    lang=l;try{localStorage.setItem('orbium_lang',l);}catch(e){}
+    document.documentElement.lang=l;
+    _tnodes(document.querySelector('.frame')).forEach(function(n){
+      var cur=n.nodeValue,key=cur.trim();
+      if(l==='en'){ if(DICT[key]!==undefined){ if(!_orig.has(n))_orig.set(n,cur); n.nodeValue=cur.replace(key,DICT[key]); } }
+      else { if(_orig.has(n)){ n.nodeValue=_orig.get(n); _orig.delete(n); } }
+    });
+    if(typeof updatePay==='function')updatePay();
+    try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
+  }
+
   // plan selection + bonus-aware pricing
   const fmt=n=>n.toLocaleString('ru-RU')+' ₽';
   function selectedPrice(){const p=document.querySelector('.plan.sel');return p?+p.dataset.price:0;}
@@ -529,7 +547,7 @@
   }
   // share ref link via Telegram
   document.getElementById('inviteBtn').addEventListener('click',()=>{
-    const text='Подключайся к Orbium VPN — премиум-скорость без лимитов. Заходи по моей ссылке:';
+    const text=L('Подключайся к Orbium VPN — премиум-скорость без лимитов. Заходи по моей ссылке:','Join Orbium VPN — premium speed with no limits. Use my link:');
     const share='https://t.me/share/url?url='+encodeURIComponent(refLink())+'&text='+encodeURIComponent(text);
     try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
     try{if(window.Telegram?.WebApp?.openTelegramLink){window.Telegram.WebApp.openTelegramLink(share);return;}}catch(e){}
@@ -537,7 +555,7 @@
   });
   // spend bonuses -> jump to tariffs with bonus applied
   document.getElementById('spendBonus').addEventListener('click',()=>{
-    if(bonus<=0){notify('Бонусов пока нет. Пригласите друга — и 10% его оплаты станут вашими бонусами.');return;}
+    if(bonus<=0){notify(L('Бонусов пока нет. Пригласите друга — и 10% его оплаты станут вашими бонусами.','No bonuses yet. Invite a friend — and 10% of their payment becomes your bonus.'));return;}
     document.querySelector('.nav button[data-view="v-tariffs"]').click();
     const ub=document.getElementById('useBonus');if(ub)ub.checked=true;updatePay();
   });
@@ -547,8 +565,8 @@
   });
   renderBonus();
 
-  const PRELAUNCH='Ключ доступа появится здесь после запуска Orbium. Вы уже в списке первых.';
-  document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();notify(PRELAUNCH);});
+  function PRELAUNCH(){return L('Ключ доступа появится здесь после запуска Orbium. Вы уже в списке первых.','Your access key will appear here after Orbium launches. You’re already on the list.');}
+  document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();notify(PRELAUNCH());});
   document.getElementById('keyBtn').addEventListener('click',()=>notify(PRELAUNCH));
 
   // ── «Ещё» actions ──
@@ -559,10 +577,10 @@
   const moreActs={
     support:()=>openLink(SUPPORT_URL),
     guide:()=>document.querySelector('.nav button[data-view="v-install"]').click(),
-    about:()=>notify(ABOUT_TEXT),
-    privacy:()=>PRIVACY_URL?openLink(PRIVACY_URL):notify('Политика конфиденциальности появится к запуску Orbium.'),
-    terms:()=>TERMS_URL?openLink(TERMS_URL):notify('Пользовательское соглашение появится к запуску Orbium.'),
-    lang:()=>notify('Сейчас доступен только русский язык. Другие языки — скоро.')
+    about:()=>notify(L(ABOUT_TEXT,'Orbium VPN — premium borderless internet access: our own servers, no limits, next-gen encryption and 24/7 support. No ads, no logs.')),
+    privacy:()=>PRIVACY_URL?openLink(PRIVACY_URL):notify(L('Политика конфиденциальности появится к запуску Orbium.','Privacy Policy will be available at Orbium launch.')),
+    terms:()=>TERMS_URL?openLink(TERMS_URL):notify(L('Пользовательское соглашение появится к запуску Orbium.','Terms of Service will be available at Orbium launch.')),
+    lang:()=>applyLang(lang==='en'?'ru':'en')
   };
   document.querySelectorAll('#v-more .lrow[data-act]').forEach(r=>r.addEventListener('click',()=>{
     const fn=moreActs[r.dataset.act];if(fn)fn();
@@ -596,6 +614,7 @@
   window.addEventListener('load',initInds);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(initInds);
   window.addEventListener('resize',initInds);
+  applyLang(lang);  // apply saved language on load
 </script>
 </body>
 </html>
