@@ -244,6 +244,31 @@
     box-shadow:0 26px 62px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.07);}
   /* referral hero number */
   .refhero .big{font-size:46px;letter-spacing:-.04em;}
+  /* ===== bonus system ===== */
+  .bonuscard{display:flex;align-items:center;gap:14px;margin:14px 0;padding:16px 18px;border-radius:18px;
+    background:linear-gradient(150deg,rgba(60,230,166,.16),rgba(91,140,255,.08));border:1px solid rgba(60,230,166,.34);
+    box-shadow:0 16px 40px rgba(20,120,90,.22),inset 0 1px 0 rgba(255,255,255,.08);}
+  .bonuscard .bc-l{flex:1;}
+  .bonuscard .bc-k{font-size:12.5px;color:var(--dim);font-weight:500;}
+  .bonuscard .bc-v{font-family:'Sora','Inter',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.02em;margin-top:3px;font-variant-numeric:tabular-nums;
+    background:linear-gradient(90deg,#eafff6,#8ffcd0);-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .bonuscard .bc-btn{border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:13.5px;color:#04140f;
+    background:linear-gradient(180deg,#7dffcf,#3ce6a6);border-radius:12px;padding:11px 14px;box-shadow:0 8px 20px rgba(60,230,166,.4);
+    transition:transform .28s var(--ease),opacity .2s;}
+  .bonuscard .bc-btn:active{transform:scale(.94);}
+  .bonuscard.empty{background:var(--glass);border-color:var(--hair);box-shadow:none;}
+  .bonuscard.empty .bc-v{background:none;-webkit-text-fill-color:var(--txt);color:var(--txt);}
+  .bonuscard.empty .bc-btn{background:var(--glass-2);color:var(--mut);box-shadow:none;cursor:default;}
+  /* tariff bonus apply row */
+  .bonusrow{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;padding:14px 16px;border-radius:14px;
+    background:rgba(60,230,166,.08);border:1px solid rgba(60,230,166,.28);}
+  .bonusrow .br-l{display:flex;align-items:center;gap:11px;font-size:14.5px;font-weight:600;cursor:pointer;user-select:none;}
+  .bonusrow .br-l input{position:absolute;opacity:0;width:0;height:0;}
+  .bonusrow .br-box{width:22px;height:22px;border-radius:7px;border:2px solid var(--mut);display:grid;place-items:center;flex:0 0 auto;transition:all .2s;}
+  .bonusrow .br-box svg{width:14px;height:14px;color:#04140f;opacity:0;transition:opacity .15s;}
+  .bonusrow .br-l input:checked + .br-box{background:var(--green);border-color:var(--green);}
+  .bonusrow .br-l input:checked + .br-box svg{opacity:1;}
+  .bonusrow .br-v{font-family:'Sora','Inter',sans-serif;font-weight:700;font-size:15px;color:var(--green);font-variant-numeric:tabular-nums;}
 </style>
 </head>
 <body>
@@ -354,17 +379,30 @@
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>До 5 устройств одновременно</div>
           </div>
 
+          <div class="bonusrow" id="bonusRow" hidden>
+            <label class="br-l"><input type="checkbox" id="useBonus"><span class="br-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Списать бонусы</label>
+            <span class="br-v">−<span id="bonusApply">0</span> ₽</span>
+          </div>
+
           <button class="btn primary" id="payBtn">Оформить за <span id="payPrice">1 590 ₽</span></button>
         </section>
 
         <!-- ===== РЕФЕРАЛЫ ===== -->
         <section class="view" id="v-ref">
           <div class="vtitle">Рефералы</div>
-          <div class="vsub">Приглашай друзей — получай с каждой оплаты.</div>
+          <div class="vsub">Приглашай друзей — получай бонусы и оплачивай ими VPN.</div>
 
           <div class="refhero">
             <div class="big">10%</div>
-            <div class="cap">кэшбек с каждой оплаты приглашённого друга — навсегда</div>
+            <div class="cap">бонусами с каждой оплаты приглашённого друга — навсегда</div>
+          </div>
+
+          <div class="bonuscard">
+            <div class="bc-l">
+              <div class="bc-k">Ваши бонусы</div>
+              <div class="bc-v"><span id="bonusBal">0</span> ₽</div>
+            </div>
+            <button class="bc-btn" id="spendBonus">Оплатить бонусами</button>
           </div>
 
           <div class="reflink">
@@ -373,18 +411,19 @@
           </div>
 
           <div class="rstats">
-            <div class="rstat"><div class="k">Приглашено</div><div class="v">0</div></div>
-            <div class="rstat"><div class="k">Заработано</div><div class="v">0 ₽</div></div>
+            <div class="rstat"><div class="k">Приглашено</div><div class="v" id="refCount">0</div></div>
+            <div class="rstat"><div class="k">Всего начислено</div><div class="v"><span id="refEarned">0</span> ₽</div></div>
           </div>
 
           <div class="incl">
             <h4>Как это работает</h4>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Делишься своей ссылкой с другом</div>
-            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Друг оформляет любой тариф</div>
-            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>10% от суммы падает тебе на баланс</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Друг оплачивает любой тариф</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>10% его оплаты падает тебе бонусами</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Оплачивай бонусами свою подписку</div>
           </div>
 
-          <button class="btn primary">Вывести (от 2 000 ₽)</button>
+          <button class="btn primary" id="inviteBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Пригласить друга</button>
         </section>
 
         <!-- ===== ЕЩЁ ===== -->
@@ -448,12 +487,25 @@
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
   }));
 
-  // plan selection
+  // ── bonus state (пополняется бэкендом; пока 0 для новых юзеров) ──
+  let bonus=0;          // доступные бонусы, ₽
+  let refInvited=0;     // приглашено друзей
+  let refEarnedTotal=0; // всего начислено бонусов, ₽
+
+  // plan selection + bonus-aware pricing
   const fmt=n=>n.toLocaleString('ru-RU')+' ₽';
+  function selectedPrice(){const p=document.querySelector('.plan.sel');return p?+p.dataset.price:0;}
+  function updatePay(){
+    const price=selectedPrice();
+    const ub=document.getElementById('useBonus');
+    const applied=(ub&&ub.checked)?Math.min(bonus,price):0;
+    const ba=document.getElementById('bonusApply');if(ba)ba.textContent=applied.toLocaleString('ru-RU');
+    document.getElementById('payPrice').textContent=fmt(price-applied);
+  }
   document.querySelectorAll('.plan').forEach(p=>p.addEventListener('click',()=>{
     document.querySelectorAll('.plan').forEach(x=>x.classList.remove('sel'));
     p.classList.add('sel');
-    document.getElementById('payPrice').textContent=fmt(+p.dataset.price);
+    updatePay();
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
   }));
 
@@ -463,6 +515,38 @@
     try{window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');}catch(e){}
     if(btn){btn.style.color='#3ce6a6';setTimeout(()=>btn.style.color='',1200);}}
   document.getElementById('refCopy').addEventListener('click',e=>copyText(document.getElementById('refurl').textContent,e.currentTarget));
+
+  // ── referral / bonus wiring ──
+  function refLink(){return 'https://'+document.getElementById('refurl').textContent.trim();}
+  function renderBonus(){
+    document.getElementById('bonusBal').textContent=bonus.toLocaleString('ru-RU');
+    document.getElementById('refEarned').textContent=refEarnedTotal.toLocaleString('ru-RU');
+    document.getElementById('refCount').textContent=refInvited;
+    document.querySelector('.bonuscard').classList.toggle('empty',bonus<=0);
+    const row=document.getElementById('bonusRow');if(row)row.hidden=bonus<=0;
+    const ub=document.getElementById('useBonus');if(ub&&bonus<=0)ub.checked=false;
+    updatePay();
+  }
+  // share ref link via Telegram
+  document.getElementById('inviteBtn').addEventListener('click',()=>{
+    const text='Подключайся к Orbium VPN — премиум-скорость без лимитов. Заходи по моей ссылке:';
+    const share='https://t.me/share/url?url='+encodeURIComponent(refLink())+'&text='+encodeURIComponent(text);
+    try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
+    try{if(window.Telegram?.WebApp?.openTelegramLink){window.Telegram.WebApp.openTelegramLink(share);return;}}catch(e){}
+    openLink(share);
+  });
+  // spend bonuses -> jump to tariffs with bonus applied
+  document.getElementById('spendBonus').addEventListener('click',()=>{
+    if(bonus<=0){notify('Бонусов пока нет. Пригласите друга — и 10% его оплаты станут вашими бонусами.');return;}
+    document.querySelector('.nav button[data-view="v-tariffs"]').click();
+    const ub=document.getElementById('useBonus');if(ub)ub.checked=true;updatePay();
+  });
+  // toggle bonus on tariff screen
+  document.getElementById('useBonus').addEventListener('change',()=>{
+    updatePay();try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
+  });
+  renderBonus();
+
   const PRELAUNCH='Ключ доступа появится здесь после запуска Orbium. Вы уже в списке первых.';
   document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();notify(PRELAUNCH);});
   document.getElementById('keyBtn').addEventListener('click',()=>notify(PRELAUNCH));
