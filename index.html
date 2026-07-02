@@ -278,6 +278,57 @@
   .langseg button{flex:1;height:46px;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;background:transparent;color:var(--mut);position:relative;z-index:1;transition:color .22s var(--ease),transform .28s var(--ease);}
   .langseg button.active{color:#0c1020;}
   .langseg button:active{transform:scale(.96);}
+
+  /* ===== Home panel ===== */
+  .hstatus{border-radius:20px;border:1px solid var(--hair-2);padding:18px;position:relative;overflow:hidden;
+    background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.02));
+    box-shadow:0 22px 54px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.09);}
+  .hstatus::before{content:"";position:absolute;top:-45%;right:-18%;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(60,230,166,.2),transparent 65%);}
+  .hstatus .htop{display:flex;align-items:center;justify-content:space-between;position:relative;}
+  .hstatus .act{text-transform:uppercase;}
+  .chipplan{font-size:12.5px;font-weight:700;color:var(--dim);background:var(--glass);border:1px solid var(--hair);border-radius:999px;padding:5px 11px;}
+  .hdays{font-family:'Sora','Inter',sans-serif;font-size:30px;font-weight:700;letter-spacing:-.03em;margin-top:14px;position:relative;font-variant-numeric:tabular-nums;}
+  .hdays small{font-size:15px;color:var(--mut);font-family:'Inter';font-weight:600;letter-spacing:0;}
+  .hbar{height:6px;border-radius:99px;background:rgba(255,255,255,.09);margin-top:12px;overflow:hidden;position:relative;}
+  .hbar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--accent-2));}
+  .hsect{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin:24px 2px 12px;}
+  .keycard{border-radius:18px;border:1px solid var(--hair);background:var(--glass);padding:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}
+  .keyrow{display:flex;align-items:center;gap:11px;background:rgba(0,0,0,.32);border:1px solid var(--hair);border-radius:13px;padding:11px 12px;margin-bottom:12px;}
+  .keyrow .kic{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;background:rgba(91,140,255,.16);border:1px solid rgba(91,140,255,.26);}
+  .keyrow .kic svg{width:17px;height:17px;color:var(--accent);}
+  .keyrow .ku{flex:1;min-width:0;font-size:13px;font-family:ui-monospace,Menlo,monospace;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .keyrow .kcp{width:36px;height:36px;border-radius:9px;border:none;background:transparent;color:var(--mut);flex:0 0 auto;display:grid;place-items:center;cursor:pointer;}
+  .keyrow .kcp svg{width:18px;height:18px;}
+  .hwrap{position:relative;}
+  .htoggle{width:100%;display:flex;align-items:center;gap:12px;padding:15px 16px;border-radius:16px;cursor:pointer;font-family:inherit;background:var(--glass);border:1px solid var(--hair);color:var(--txt);}
+  .htoggle .hic{width:38px;height:38px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;}
+  .htoggle .hic.globe{background:rgba(91,140,255,.16);border:1px solid rgba(91,140,255,.26);color:var(--accent-2);}
+  .htoggle .hic.book{background:rgba(154,107,255,.16);border:1px solid rgba(154,107,255,.3);color:var(--violet);}
+  .htoggle .hic svg{width:19px;height:19px;}
+  .htoggle .htt{flex:1;text-align:left;min-width:0;}
+  .htoggle .htt .hh{display:block;font-size:15px;font-weight:700;}
+  .htoggle .htt .hs{display:block;font-size:12px;color:var(--mut);margin-top:2px;}
+  .htoggle .hflags{font-size:15px;letter-spacing:-3px;margin-right:4px;flex:0 0 auto;}
+  .htoggle .hchev{color:var(--mut);flex:0 0 auto;display:grid;transition:transform .32s var(--ease);}
+  .htoggle .hchev svg{width:20px;height:20px;}
+  .hwrap.open .htoggle .hchev{transform:rotate(180deg);}
+  .hwrap.open .htoggle{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent;}
+  .hgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-height:0;overflow:hidden;opacity:0;transition:max-height .42s var(--ease),opacity .3s,padding .4s var(--ease);padding-top:0;}
+  .hwrap.open .hgrid{max-height:560px;opacity:1;padding-top:10px;}
+  .hcountry{display:flex;align-items:center;gap:11px;padding:13px 14px;border-radius:15px;background:var(--glass);border:1px solid var(--hair);}
+  .hcountry .hfl{font-size:22px;line-height:1;flex:0 0 auto;}
+  .hcountry .hcn{flex:1;min-width:0;}
+  .hcountry .hcn .hn{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hcountry .hcn .hp{font-size:11.5px;color:var(--mut);margin-top:2px;}
+  .hcountry .hst{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);flex:0 0 auto;}
+  .hcountry.busy .hst{background:var(--amber);box-shadow:0 0 8px var(--amber);}
+  .hbody{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s var(--ease),opacity .3s,padding .4s var(--ease);padding-top:0;}
+  .hwrap.open .hbody{max-height:1600px;opacity:1;padding-top:6px;}
+  .hwrap.open.ov .hbody{overflow:visible;}
+  .hbody .sec{margin-top:6px;}
+  .htoggle,.hcountry,.keyrow .kcp{transition:transform .28s var(--ease),background-color .2s,border-color .2s;}
+  .htoggle:active{transform:scale(.985);}
+  .hcountry:active{transform:scale(.97);}
 </style>
 </head>
 <body>
@@ -293,7 +344,7 @@
       <div class="scroll">
 
         <!-- ===== УСТАНОВКА ===== -->
-        <section class="view active" id="v-install">
+        <section class="view active" id="v-home">
           <div class="head">
             <div class="orb"></div>
             <div class="ttl">ORBIUM VPN</div>
@@ -301,21 +352,52 @@
           </div>
           <div class="divider"></div>
 
-          <div class="status">
-            <div class="top">
-              <div class="act pre"><span class="dot"></span>СКОРО ЗАПУСК</div>
-              <div class="badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9l-4.5 3.3L16.7 18 12 14.7 7.3 18l1.7-5.7L4.5 9l5.6-1.4z"/></svg>ранний доступ</div>
-            </div>
-            <div class="sublink">
-              <span class="key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2"/><path d="m16 6 3 3"/><path d="m18 8 2-2"/></svg></span>
-              <span class="url" id="suburl" style="white-space:normal;font-family:inherit;color:var(--dim);line-height:1.45;">Вы в списке первых — ключ доступа появится здесь после запуска.</span>
-            </div>
-            <div class="left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Заявка принята — следите за <b>@Orbium_vpn</b></div>
+          <div class="hstatus">
+            <div class="htop"><div class="act"><span class="dot"></span>Подписка активна</div><div class="chipplan">6 месяцев</div></div>
+            <div class="hdays"><span id="subDays">174</span> <small>дня осталось</small></div>
+            <div class="hbar"><i style="width:78%"></i></div>
           </div>
 
+          <div class="hsect">Ваш ключ доступа</div>
+          <div class="keycard">
+            <div class="keyrow">
+              <span class="kic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2"/><path d="m16 6 3 3"/><path d="m18 8 2-2"/></svg></span>
+              <span class="ku" id="subKey">orbium.app/sub/dGdfODYwNjc5MjY5</span>
+              <button class="kcp" id="keyCopy" aria-label="Скопировать ключ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+            </div>
+            <button class="btn primary" id="addHapp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>Добавить в Happ</button>
+          </div>
+
+          <div class="hsect">Подключение</div>
+          <div class="hwrap">
+            <button class="htoggle">
+              <span class="hic globe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></span>
+              <span class="htt"><span class="hh">Доступные страны</span><span class="hs">8 локаций · все работают</span></span>
+              <span class="hflags">🇳🇱🇩🇪🇺🇸</span>
+              <span class="hchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </button>
+            <div class="hgrid">
+            <div class="hcountry"><span class="hfl">🇳🇱</span><div class="hcn"><div class="hn">Нидерланды</div><div class="hp">18 мс</div></div><span class="hst"></span></div>
+            <div class="hcountry"><span class="hfl">🇩🇪</span><div class="hcn"><div class="hn">Германия</div><div class="hp">24 мс</div></div><span class="hst"></span></div>
+            <div class="hcountry"><span class="hfl">🇺🇸</span><div class="hcn"><div class="hn">США</div><div class="hp">92 мс</div></div><span class="hst"></span></div>
+            <div class="hcountry"><span class="hfl">🇬🇧</span><div class="hcn"><div class="hn">Британия</div><div class="hp">31 мс</div></div><span class="hst"></span></div>
+            <div class="hcountry"><span class="hfl">🇫🇮</span><div class="hcn"><div class="hn">Финляндия</div><div class="hp">14 мс</div></div><span class="hst"></span></div>
+            <div class="hcountry busy"><span class="hfl">🇫🇷</span><div class="hcn"><div class="hn">Франция</div><div class="hp">27 мс</div></div><span class="hst"></span></div>
+            <div class="hcountry"><span class="hfl">🇸🇪</span><div class="hcn"><div class="hn">Швеция</div><div class="hp">21 мс</div></div><span class="hst"></span></div>
+            <div class="hcountry"><span class="hfl">🇹🇷</span><div class="hcn"><div class="hn">Турция</div><div class="hp">44 мс</div></div><span class="hst"></span></div>
+            </div>
+          </div>
+
+          <div class="hsect">Установка</div>
+          <div class="hwrap hwrap-install">
+            <button class="htoggle">
+              <span class="hic book"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+              <span class="htt"><span class="hh">Как установить</span><span class="hs">Happ · V2rayTun · пошагово</span></span>
+              <span class="hchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+            </button>
+            <div class="hbody">
           <div class="sec">
-            <div class="sic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-            <div class="st">Установка</div>
+            <div class="st" style="font-size:15px;">Платформа</div>
             <button class="platform" id="platformBtn"><svg class="os" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.5V11H3z M11.5 4.3 21 3v8h-9.5z M3 12h7.5v6.5L3 17.5z M11.5 12H21v9l-9.5-1.3z"/></svg><span id="osName">Windows</span><svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
             <div class="pmenu" id="pmenu">
               <button data-os="ios">iOS<svg class="ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
@@ -348,6 +430,8 @@
               <p>«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже: <span class="cn">Happ</span> откроется и ключ добавится сам.</p>
               <p>Не сработало? <a href="#" id="copyLink">Скопируйте ключ</a> и в приложении: «+» → «Вставить из буфера».</p>
               <button class="btn primary" id="keyBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить ключ</button>
+            </div>
+          </div>
             </div>
           </div>
         </section>
@@ -461,7 +545,7 @@
 
     <nav class="nav">
       <span class="nind"></span>
-      <button class="active" data-view="v-install"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.2 7.8 13.4 13.4 7.8 16.2 10.6 10.6 16.2 7.8"/></svg>Установка</button>
+      <button class="active" data-view="v-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 8.5 8 11 4.6-2.5 8-6 8-11V5z"/></svg>Главная</button>
       <button data-view="v-tariffs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2 0-2.8a2 2 0 0 0-3 0z"/><path d="M12 15 9 12c.5-3.5 2.5-7 8-9 .5 5.5-3 7.5-6 8z"/><path d="M9 12H4s.5-2.8 2-4c1.7-1.3 5 0 5 0"/><path d="M12 15v5s2.8-.5 4-2c1.3-1.7 0-5 0-5"/></svg>Тарифы</button>
       <button data-view="v-ref"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Пригласить</button>
       <button data-view="v-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>Ещё</button>
@@ -514,7 +598,7 @@
   // ── i18n (RU/EN) — переключение всего интерфейса ──
   let lang=(function(){try{return localStorage.getItem('orbium_lang')||'ru';}catch(e){return 'ru';}})();
   function L(ru,en){return lang==='en'?en:ru;}
-  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, до 2 устройств.": "Unlimited, up to 2 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "300 ₽ / месяц": "300 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Серверы в нескольких странах": "Servers in several countries", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 2 устройств одновременно": "Up to 2 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language"};
+  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, до 2 устройств.": "Unlimited, up to 2 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "300 ₽ / месяц": "300 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Серверы в нескольких странах": "Servers in several countries", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 2 устройств одновременно": "Up to 2 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language", "Главная": "Home", "Подписка активна": "Subscription active", "дня осталось": "days left", "Ваш ключ доступа": "Your access key", "Добавить в Happ": "Add to Happ", "Подключение": "Connection", "Доступные страны": "Available countries", "8 локаций · все работают": "8 locations · all online", "Как установить": "How to install", "Happ · V2rayTun · пошагово": "Happ · V2rayTun · step by step", "Платформа": "Platform", "Нидерланды": "Netherlands", "Германия": "Germany", "США": "USA", "Британия": "UK", "Финляндия": "Finland", "Франция": "France", "Швеция": "Sweden", "Турция": "Turkey"};
   const _orig=new WeakMap();
   function _tnodes(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),a=[],n;while(n=w.nextNode()){if(n.nodeValue&&n.nodeValue.trim())a.push(n);}return a;}
   function applyLang(l){
@@ -597,7 +681,7 @@
   const ABOUT_TEXT='Orbium VPN — премиум-доступ в интернет без границ: свои серверы, безлимит, шифрование нового поколения и поддержка 24/7. Без рекламы и логов.';
   const moreActs={
     support:()=>openLink(SUPPORT_URL),
-    guide:()=>document.querySelector('.nav button[data-view="v-install"]').click(),
+    guide:()=>{document.querySelector('.nav button[data-view="v-home"]').click();var w=document.querySelector('.hwrap-install');if(w&&!w.classList.contains('open'))w.querySelector('.htoggle').click();},
     about:()=>notify(L(ABOUT_TEXT,'Orbium VPN — premium borderless internet access: our own servers, no limits, next-gen encryption and 24/7 support. No ads, no logs.')),
     privacy:()=>PRIVACY_URL?openLink(PRIVACY_URL):notify(L('Политика конфиденциальности появится к запуску Orbium.','Privacy Policy will be available at Orbium launch.')),
     terms:()=>TERMS_URL?openLink(TERMS_URL):notify(L('Пользовательское соглашение появится к запуску Orbium.','Terms of Service will be available at Orbium launch.')),
@@ -624,6 +708,25 @@
   document.querySelectorAll('#pmenu button').forEach(b=>b.addEventListener('click',()=>{setOS(b.dataset.os);pMenu.classList.remove('open');try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}}));
   document.addEventListener('click',()=>pMenu.classList.remove('open'));
   document.getElementById('dlBtn').addEventListener('click',()=>openLink(LINKS[curClient][curOS]));
+
+  // ── home panel: collapsibles, key copy, add to Happ ──
+  document.querySelectorAll('.htoggle').forEach(function(b){
+    b.addEventListener('click',function(){
+      var w=b.closest('.hwrap'); var open=w.classList.toggle('open');
+      if(w.classList.contains('hwrap-install')){
+        if(open){ setTimeout(function(){moveInd(tabInd,document.querySelector('.tabs button.active'));w.classList.add('ov');},430); }
+        else { w.classList.remove('ov'); }
+      }
+      try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
+    });
+  });
+  (function(){
+    var kEl=document.getElementById('subKey');
+    var kc=document.getElementById('keyCopy'), ah=document.getElementById('addHapp');
+    function fullKey(){return 'https://'+kEl.textContent.trim();}
+    if(kc)kc.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);});
+    if(ah)ah.addEventListener('click',function(){openLink('happ://add/'+encodeURIComponent(fullKey()));});
+  })();
 
   // place sliding indicators from real layout (re-run after fonts settle)
   function initInds(){
