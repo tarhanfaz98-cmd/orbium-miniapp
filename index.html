@@ -269,6 +269,14 @@
   .bonusrow .br-l input:checked + .br-box{background:var(--green);border-color:var(--green);}
   .bonusrow .br-l input:checked + .br-box svg{opacity:1;}
   .bonusrow .br-v{font-family:'Sora','Inter',sans-serif;font-weight:700;font-size:15px;color:var(--green);font-variant-numeric:tabular-nums;}
+
+  /* language segmented control */
+  .langlabel{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:22px 2px 12px;}
+  .langseg{position:relative;display:flex;background:var(--glass);border:1px solid var(--hair);border-radius:16px;padding:5px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
+  .langseg .lind{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:12px;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.35);transition:transform .42s var(--ease),width .42s var(--ease);}
+  .langseg button{flex:1;height:46px;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;background:transparent;color:var(--mut);position:relative;z-index:1;transition:color .22s var(--ease),transform .28s var(--ease);}
+  .langseg button.active{color:#0c1020;}
+  .langseg button:active{transform:scale(.96);}
 </style>
 </head>
 <body>
@@ -437,7 +445,13 @@
             <div class="lrow" data-act="about"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span><span class="lt">О сервисе</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
             <div class="lrow" data-act="privacy"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="lt">Политика конфиденциальности</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
             <div class="lrow" data-act="terms"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="lt">Пользовательское соглашение</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
-            <div class="lrow" data-act="lang"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/></svg></span><span class="lt">Язык · Русский</span><span class="lc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+          </div>
+        
+          <div class="langlabel">Язык</div>
+          <div class="langseg">
+            <span class="lind"></span>
+            <button data-lang="ru" class="active">Русский</button>
+            <button data-lang="en">English</button>
           </div>
         </section>
 
@@ -464,6 +478,9 @@
     ind.style.left=first.offsetLeft+'px';
     ind.style.transform='translateX('+(btn.offsetLeft-first.offsetLeft)+'px)';
   }
+  const langInd=document.querySelector('.langseg .lind');
+  function moveLangInd(){const a=document.querySelector('.langseg button.active');if(a&&langInd)moveInd(langInd,a);}
+  document.querySelectorAll('.langseg button').forEach(function(b){b.addEventListener('click',function(){if(!b.classList.contains('active'))applyLang(b.dataset.lang);});});
   const tabInd=document.querySelector('.tabs .tind');
   const navInd=document.querySelector('.nav .nind');
 
@@ -474,6 +491,7 @@
     b.classList.add('active');
     moveInd(navInd,b);
     views.forEach(v=>v.classList.toggle('active',v.id===b.dataset.view));
+    if(b.dataset.view==='v-more')moveLangInd();
     document.querySelector('.scroll').scrollTop=0;
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
   }));
@@ -495,7 +513,7 @@
   // ── i18n (RU/EN) — переключение всего интерфейса ──
   let lang=(function(){try{return localStorage.getItem('orbium_lang')||'ru';}catch(e){return 'ru';}})();
   function L(ru,en){return lang==='en'?en:ru;}
-  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, все страны, до 5 устройств.": "Unlimited, all countries, up to 5 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "200 ₽ / месяц": "200 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Все страны на выбор": "All countries to choose from", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 5 устройств одновременно": "Up to 5 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite"};
+  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, все страны, до 5 устройств.": "Unlimited, all countries, up to 5 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "200 ₽ / месяц": "200 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Все страны на выбор": "All countries to choose from", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 5 устройств одновременно": "Up to 5 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language"};
   const _orig=new WeakMap();
   function _tnodes(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),a=[],n;while(n=w.nextNode()){if(n.nodeValue&&n.nodeValue.trim())a.push(n);}return a;}
   function applyLang(l){
@@ -506,6 +524,8 @@
       if(l==='en'){ if(DICT[key]!==undefined){ if(!_orig.has(n))_orig.set(n,cur); n.nodeValue=cur.replace(key,DICT[key]); } }
       else { if(_orig.has(n)){ n.nodeValue=_orig.get(n); _orig.delete(n); } }
     });
+    document.querySelectorAll('.langseg button').forEach(function(x){x.classList.toggle('active',x.dataset.lang===l);});
+    if(typeof moveLangInd==='function')moveLangInd();
     if(typeof updatePay==='function')updatePay();
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
   }
@@ -580,7 +600,6 @@
     about:()=>notify(L(ABOUT_TEXT,'Orbium VPN — premium borderless internet access: our own servers, no limits, next-gen encryption and 24/7 support. No ads, no logs.')),
     privacy:()=>PRIVACY_URL?openLink(PRIVACY_URL):notify(L('Политика конфиденциальности появится к запуску Orbium.','Privacy Policy will be available at Orbium launch.')),
     terms:()=>TERMS_URL?openLink(TERMS_URL):notify(L('Пользовательское соглашение появится к запуску Orbium.','Terms of Service will be available at Orbium launch.')),
-    lang:()=>applyLang(lang==='en'?'ru':'en')
   };
   document.querySelectorAll('#v-more .lrow[data-act]').forEach(r=>r.addEventListener('click',()=>{
     const fn=moreActs[r.dataset.act];if(fn)fn();
