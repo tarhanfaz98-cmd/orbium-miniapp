@@ -262,6 +262,7 @@
   /* tariff bonus apply row */
   .bonusrow{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;padding:14px 16px;border-radius:14px;
     background:rgba(60,230,166,.08);border:1px solid rgba(60,230,166,.28);}
+  .bonusrow[hidden]{display:none;}
   .bonusrow .br-l{display:flex;align-items:center;gap:11px;font-size:14.5px;font-weight:600;cursor:pointer;user-select:none;}
   .bonusrow .br-l input{position:absolute;opacity:0;width:0;height:0;}
   .bonusrow .br-box{width:22px;height:22px;border-radius:7px;border:2px solid var(--mut);display:grid;place-items:center;flex:0 0 auto;transition:all .2s;}
@@ -354,17 +355,17 @@
         <!-- ===== ТАРИФЫ ===== -->
         <section class="view" id="v-tariffs">
           <div class="vtitle">Тарифы</div>
-          <div class="vsub">Безлимит, все страны, до 5 устройств.</div>
+          <div class="vsub">Безлимит, до 2 устройств.</div>
 
           <div class="plan" data-price="350">
             <span class="radio"></span>
             <div class="pn"><div class="t">1 месяц</div><div class="s">350 ₽ / месяц</div></div>
             <div class="pr"><div class="p">350 ₽</div></div>
           </div>
-          <div class="plan" data-price="600">
+          <div class="plan" data-price="900">
             <span class="radio"></span>
-            <div class="pn"><div class="t">3 месяца</div><div class="s">200 ₽ / месяц</div><span class="disc">−43%</span></div>
-            <div class="pr"><div class="p">600 ₽</div><div class="o">1 050 ₽</div></div>
+            <div class="pn"><div class="t">3 месяца</div><div class="s">300 ₽ / месяц</div><span class="disc">−14%</span></div>
+            <div class="pr"><div class="p">900 ₽</div><div class="o">1 050 ₽</div></div>
           </div>
           <div class="plan sel" data-price="1590">
             <span class="tagpop">популярный</span>
@@ -382,9 +383,9 @@
             <h4>Что входит</h4>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Скорость до 1 Гбит/с</div>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Без лимита трафика</div>
-            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Все страны на выбор</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Серверы в нескольких странах</div>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Шифрование VLESS + Reality</div>
-            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>До 5 устройств одновременно</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>До 2 устройств одновременно</div>
           </div>
 
           <div class="bonusrow" id="bonusRow" hidden>
@@ -513,7 +514,7 @@
   // ── i18n (RU/EN) — переключение всего интерфейса ──
   let lang=(function(){try{return localStorage.getItem('orbium_lang')||'ru';}catch(e){return 'ru';}})();
   function L(ru,en){return lang==='en'?en:ru;}
-  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, все страны, до 5 устройств.": "Unlimited, all countries, up to 5 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "200 ₽ / месяц": "200 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Все страны на выбор": "All countries to choose from", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 5 устройств одновременно": "Up to 5 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language"};
+  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, до 2 устройств.": "Unlimited, up to 2 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "300 ₽ / месяц": "300 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Серверы в нескольких странах": "Servers in several countries", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 2 устройств одновременно": "Up to 2 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language"};
   const _orig=new WeakMap();
   function _tnodes(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),a=[],n;while(n=w.nextNode()){if(n.nodeValue&&n.nodeValue.trim())a.push(n);}return a;}
   function applyLang(l){
