@@ -352,9 +352,24 @@
           </div>
           <div class="divider"></div>
 
+          <div id="homePre">
+            <div class="status">
+              <div class="top">
+                <div class="act pre"><span class="dot"></span>СКОРО ЗАПУСК</div>
+                <div class="badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.6L19.5 9l-4.5 3.3L16.7 18 12 14.7 7.3 18l1.7-5.7L4.5 9l5.6-1.4z"/></svg>ранний доступ</div>
+              </div>
+              <div class="sublink">
+                <span class="key"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2"/><path d="m16 6 3 3"/><path d="m18 8 2-2"/></svg></span>
+                <span class="url" style="white-space:normal;font-family:inherit;color:var(--dim);line-height:1.45;">Вы в списке первых — ключ доступа появится здесь после запуска.</span>
+              </div>
+              <div class="left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Заявка принята — следите за <b>@Orbium_vpn</b></div>
+            </div>
+            <button class="btn primary" id="choosePlan" style="margin-top:16px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Выбрать тариф</button>
+          </div>
+          <div id="homeActive" hidden>
           <div class="hstatus">
-            <div class="htop"><div class="act"><span class="dot"></span>Подписка активна</div><div class="chipplan">6 месяцев</div></div>
-            <div class="hdays"><span id="subDays">174</span> <small>дня осталось</small></div>
+            <div class="htop"><div class="act"><span class="dot"></span><span id="subState">Подписка активна</span></div><div class="chipplan" data-days="180">6 месяцев</div></div>
+            <div class="hdays"><span id="subDays">180</span> <small id="subUnit">дней осталось</small></div>
             <div class="hbar"><i style="width:78%"></i></div>
           </div>
 
@@ -388,6 +403,7 @@
             </div>
           </div>
 
+          </div>
           <div class="hsect">Установка</div>
           <div class="hwrap hwrap-install">
             <button class="htoggle">
@@ -598,9 +614,24 @@
   // ── i18n (RU/EN) — переключение всего интерфейса ──
   let lang=(function(){try{return localStorage.getItem('orbium_lang')||'ru';}catch(e){return 'ru';}})();
   function L(ru,en){return lang==='en'?en:ru;}
-  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, до 2 устройств.": "Unlimited, up to 2 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "300 ₽ / месяц": "300 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Серверы в нескольких странах": "Servers in several countries", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 2 устройств одновременно": "Up to 2 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language", "Главная": "Home", "Подписка активна": "Subscription active", "дня осталось": "days left", "Ваш ключ доступа": "Your access key", "Добавить в Happ": "Add to Happ", "Подключение": "Connection", "Доступные страны": "Available countries", "8 локаций · все работают": "8 locations · all online", "Как установить": "How to install", "Happ · V2rayTun · пошагово": "Happ · V2rayTun · step by step", "Платформа": "Platform", "Нидерланды": "Netherlands", "Германия": "Germany", "США": "USA", "Британия": "UK", "Финляндия": "Finland", "Франция": "France", "Швеция": "Sweden", "Турция": "Turkey"};
+  const DICT={"СКОРО ЗАПУСК": "LAUNCHING SOON", "ранний доступ": "early access", "Вы в списке первых — ключ доступа появится здесь после запуска.": "You’re on the early list — your access key will appear here after launch.", "Заявка принята — следите за": "Request accepted — follow", "Установка": "Setup", "Установите": "Install", "Скачайте": "Download", "для вашей платформы (": "for your platform (", ") и установите. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разрешите добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавьте ключ доступа": "Add your access key", "«Ключ доступа» — это ваша личная ссылка-подписка. Нажмите кнопку ниже:": "Your “access key” is your personal subscription link. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируйте ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, до 2 устройств.": "Unlimited, up to 2 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "300 ₽ / месяц": "300 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Серверы в нескольких странах": "Servers in several countries", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 2 устройств одновременно": "Up to 2 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Ваши бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "10% его оплаты падает тебе бонусами": "10% of their payment goes to you as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language", "Главная": "Home", "Ваш ключ доступа": "Your access key", "Добавить в Happ": "Add to Happ", "Подключение": "Connection", "Доступные страны": "Available countries", "8 локаций · все работают": "8 locations · all online", "Как установить": "How to install", "Happ · V2rayTun · пошагово": "Happ · V2rayTun · step by step", "Платформа": "Platform", "Нидерланды": "Netherlands", "Германия": "Germany", "США": "USA", "Британия": "UK", "Финляндия": "Finland", "Франция": "France", "Швеция": "Sweden", "Турция": "Turkey", "Выбрать тариф": "Choose a plan"};
   const _orig=new WeakMap();
   function _tnodes(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),a=[],n;while(n=w.nextNode()){if(n.nodeValue&&n.nodeValue.trim())a.push(n);}return a;}
+  function pluralRu(n,f){var a=Math.abs(n)%100,b=a%10;if(a>10&&a<20)return f[2];if(b>1&&b<5)return f[1];if(b===1)return f[0];return f[2];}
+  function planTotal(){var c=document.querySelector('.chipplan');var d=c&&parseInt(c.dataset.days,10);return d||30;} // полный срок тарифа
+  function subColor(n){if(n<=3)return '#ff4d4d';var t=Math.max(0,Math.min(1,(n-3)/42));return 'hsl('+(t*140).toFixed(0)+',85%,55%)';}
+  function renderDays(){
+    var el=document.getElementById('subDays');if(!el)return;
+    var n=parseInt((el.textContent||'0').replace(/\D/g,''),10)||0;
+    var u=document.getElementById('subUnit');if(u)u.textContent=(lang==='en')?((n===1?'day':'days')+' left'):(pluralRu(n,['день','дня','дней'])+' осталось');
+    var bar=document.querySelector('.hbar i');
+    if(bar){var w=Math.max(4,Math.min(100,n/planTotal()*100));bar.style.width=w+'%';bar.style.background=subColor(n);}
+    var active=n>0;
+    var st=document.getElementById('subState');
+    if(st)st.textContent=active?(lang==='en'?'Subscription active':'Подписка активна'):(lang==='en'?'Subscription inactive':'Подписка не активна');
+    var dot=document.querySelector('.hstatus .act .dot'), act=document.querySelector('.hstatus .act');
+    if(dot&&act){var c=active?subColor(n):'#ff4d4d';dot.style.background=c;dot.style.boxShadow='0 0 8px '+c;act.style.color=active?(n<=3?'#ff6b6b':''):'#ff6b6b';}
+  }
   function applyLang(l){
     lang=l;try{localStorage.setItem('orbium_lang',l);}catch(e){}
     document.documentElement.lang=l;
@@ -612,6 +643,7 @@
     document.querySelectorAll('.langseg button').forEach(function(x){x.classList.toggle('active',x.dataset.lang===l);});
     if(typeof moveLangInd==='function')moveLangInd();
     if(typeof updatePay==='function')updatePay();
+    if(typeof renderDays==='function')renderDays();
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
   }
 
@@ -737,6 +769,10 @@
   window.addEventListener('load',initInds);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(initInds);
   window.addEventListener('resize',initInds);
+  var hasSub=false; // ← бэкенд ставит true при активной подписке
+  (function(){var a=document.getElementById('homeActive'),p=document.getElementById('homePre');if(a)a.hidden=!hasSub;if(p)p.hidden=hasSub;
+    var el=document.getElementById('subDays');if(el)el.textContent=planTotal();})(); // ДЕМО: без бэкенда показываем пред-запуск; активная панель — за hasSub
+  var _cp=document.getElementById('choosePlan');if(_cp)_cp.addEventListener('click',function(){document.querySelector('.nav button[data-view="v-tariffs"]').click();});
   applyLang(lang);  // apply saved language on load
 </script>
 </body>
