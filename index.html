@@ -723,6 +723,43 @@
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
   }));
 
+  // ── оплата: выбор метода → n8n создаёт платёж → открываем ссылку ──
+  const PAY_CREATE_URL='https://tarhanfaz98.app.n8n.cloud/webhook/orbium-pay-create';
+  const PLAN_CODE={350:'1m',900:'3m',1590:'6m',2690:'12m'};
+  (function(){
+    var payBtn=document.getElementById('payBtn');if(!payBtn)return;
+    var payLabel=payBtn.innerHTML;
+    function doPay(method){
+      var tg=window.Telegram&&window.Telegram.WebApp;
+      var uid='';try{uid=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id||'');}catch(e){}
+      if(!uid){notify(L('Откройте мини-апп из Telegram, чтобы оплатить.','Open the app from Telegram to pay.'));return;}
+      var ref='';try{ref=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param||'');}catch(e){}
+      var plan=PLAN_CODE[selectedPrice()];
+      if(!plan){notify(L('Выберите тариф.','Select a plan.'));return;}
+      payBtn.disabled=true;payBtn.textContent=L('Создаём оплату…','Creating payment…');
+      fetch(PAY_CREATE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tgId:uid,plan:plan,method:method,referrer:ref})})
+        .then(function(r){return r.json();})
+        .then(function(d){
+          payBtn.disabled=false;payBtn.innerHTML=payLabel;updatePay();
+          if(d&&d.url){try{window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');}catch(e){}
+            if(tg&&tg.openLink)tg.openLink(d.url);else window.open(d.url,'_blank');}
+          else notify(L('Не удалось создать оплату. Попробуйте ещё раз.','Could not create payment. Try again.'));
+        })
+        .catch(function(){payBtn.disabled=false;payBtn.innerHTML=payLabel;updatePay();notify(L('Ошибка сети. Попробуйте ещё раз.','Network error. Try again.'));});
+    }
+    payBtn.addEventListener('click',function(){
+      try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
+      var tg=window.Telegram&&window.Telegram.WebApp;
+      if(tg&&tg.showPopup){
+        tg.showPopup({title:L('Способ оплаты','Payment method'),message:L('Как оплатить Orbium VPN?','How would you like to pay?'),buttons:[
+          {id:'sbp',type:'default',text:L('СБП','SBP')},
+          {id:'crypto',type:'default',text:L('Криптовалюта','Crypto')},
+          {id:'cancel',type:'cancel'}
+        ]},function(btn){if(btn==='sbp')doPay('sbp');else if(btn==='crypto')doPay('crypto');});
+      } else { doPay('sbp'); }
+    });
+  })();
+
   // copy helpers
   function notify(msg){try{if(window.Telegram?.WebApp?.showAlert){window.Telegram.WebApp.showAlert(msg);return;}}catch(e){}alert(msg);}
   function copyText(text,btn){navigator.clipboard?.writeText(text);
