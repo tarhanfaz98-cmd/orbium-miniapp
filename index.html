@@ -395,7 +395,7 @@
           <div class="head">
             <div class="orb"></div>
             <div class="ttl">ORBIUM VPN</div>
-            <div class="uchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>@Orbium_1</div>
+            <div class="uchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span id="uchipName">Orbium</span></div>
           </div>
           <div class="divider"></div>
 
@@ -825,10 +825,8 @@
   ].join('\n');
   const STATUS_URL=(window.ORBIUM_STATUS_URL||'https://app.orbiumvpn.com/servers.json');
   const SERVER_STATUS_FALLBACK=[
-    {name:'Германия 1', flag:'🇩🇪', subtitle:'основной сервер · active', latency_ms:52, load_percent:34, status:'online', recommended:true},
-    {name:'Германия 2', flag:'🇩🇪', subtitle:'1 сервер · active', latency_ms:60, load_percent:41, status:'online', recommended:false},
-    {name:'Германия 3', flag:'🇩🇪', subtitle:'1 сервер · active', latency_ms:68, load_percent:39, status:'online', recommended:false},
-    {name:'Нидерланды 1', flag:'🇳🇱', subtitle:'1 сервер · active', latency_ms:64, load_percent:30, status:'online', recommended:false}
+    {name:'Германия', flag:'🇩🇪', subtitle:'3 сервера · active', status:'online', recommended:true},
+    {name:'Нидерланды', flag:'🇳🇱', subtitle:'1 сервер · active', status:'online', recommended:false}
   ];
   const SUBSCRIPTION_LINKS={
     'Orbium-WS-NL-Primary':'vless://11111111-1111-4111-8111-111111111111@78.17.153.159:443?encryption=none&security=none&type=ws&host=78.17.153.159&path=%2Forbium#Orbium-WS-NL-Primary',
@@ -837,9 +835,7 @@
   };
   let latestServerStatus=SERVER_STATUS_FALLBACK.slice();
   function serverMetricText(s){
-    const latency=(typeof s.latency_ms==='number')?`${s.latency_ms} ${L('мс','ms')}`:'--';
-    const load=(typeof s.load_percent==='number')?`${s.load_percent}% load`:'--';
-    return `${latency} · ${load}`;
+    return (s.status||'online')==='offline'?L('офлайн','offline'):('🟢 '+L('онлайн','online'));
   }
   function serverSubtitle(s){
     const base=s.subtitle||((s.status||'online')==='offline'?'offline':'1 сервер · active');
@@ -855,9 +851,8 @@
     if(flagNode)flagNode.textContent=flags;
     const recommended=list.find(s=>s.recommended)||list[0];
     const sub=document.querySelector('.htoggle .hs');
-    if(sub&&recommended){
-      const latency=(typeof recommended.latency_ms==='number')?`${recommended.latency_ms} ${L('мс','ms')}`:'--';
-      sub.textContent=`${list.length} ${L('проверенные ноды','verified nodes')} · ${L('Лучший сейчас','Best now')}: ${recommended.name} · ${latency}`;
+    if(sub){
+      sub.textContent=`${list.length} ${pluralRu(list.length,['страна','страны','стран'])} · ${L('все активны','all active')}`;
     }
     grid.innerHTML=list.map((s)=>{
       const cls=`hcountry${s.status==='offline'?' offline':''}${s.status==='online'&&s.load_percent>=75?' busy':''}${s.recommended?' rec':''}`;
@@ -965,8 +960,16 @@
       var chip=document.querySelector('.chipplan');if(chip){if(d.plan)chip.textContent=d.plan;chip.dataset.days=d.total||Math.max(d.days,30);}
       var kEl=document.getElementById('subKey');if(kEl)kEl.textContent='Orbium VPN · '+srvN+' '+pluralRu(srvN,['сервер','сервера','серверов']);
       if(d.links&&d.links.length){
-        var srv=d.links.map(function(l,i){var nm=decodeURIComponent((l.split('#')[1]||('Германия '+(i+1)))).replace('Orbium','').trim();
-          return {name:nm,flag:'🇩🇪',subtitle:L('1 сервер · active','1 server · active'),latency_ms:50+i*8,load_percent:30+i*7,status:'online',recommended:i===0};});
+        var byC={};
+        (d.links||[]).forEach(function(l){
+          var tag=decodeURIComponent(l.split('#')[1]||'');
+          var isNL=tag.indexOf('Нидерл')>=0||tag.indexOf('🇳🇱')>=0;
+          var nm=isNL?'Нидерланды':'Германия', fl=isNL?'🇳🇱':'🇩🇪';
+          if(!byC[nm])byC[nm]={name:nm,flag:fl,count:0};
+          byC[nm].count++;
+        });
+        var srv=Object.keys(byC).map(function(k,i){var c=byC[k];
+          return {name:c.name,flag:c.flag,subtitle:c.count+' '+pluralRu(c.count,['сервер','сервера','серверов'])+' · active',load_percent:30,status:'online',recommended:i===0};});
         if(typeof renderServerStatus==='function')renderServerStatus(srv);
       }
       if(typeof renderDays==='function')renderDays();
@@ -989,6 +992,8 @@
     var uid='';try{uid=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id||'');}catch(e){}
     var ru=document.getElementById('refurl');
     if(ru&&uid)ru.textContent='t.me/Orbium_77bot?startapp='+uid;
+    var uname='';try{uname=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.username)||'';}catch(e){}
+    var _un=document.getElementById('uchipName');if(_un)_un.textContent=uname?('@'+uname):(uid?('id'+uid.slice(-6)):'Orbium');
     try{
       var initData=(tg&&tg.initData)||'';
       if(initData){
