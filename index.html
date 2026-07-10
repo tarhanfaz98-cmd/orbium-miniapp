@@ -933,7 +933,7 @@
   (function(){
     var kEl=document.getElementById('subKey');
     var kc=document.getElementById('keyCopy'), ah=document.getElementById('addHapp');
-    function fullKey(){return (window.ORBIUM_LINKS&&window.ORBIUM_LINKS.length)?window.ORBIUM_LINKS.join('\n'):getSubscriptionBundle();}
+    function fullKey(){return window.ORBIUM_SUB || ((window.ORBIUM_LINKS&&window.ORBIUM_LINKS.length)?window.ORBIUM_LINKS.join('\n'):getSubscriptionBundle());}
     if(kc)kc.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);});
     if(kc)kc.addEventListener('click',function(){notify(COPY_GUIDE());});
     if(ah)ah.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);notify(COPY_GUIDE());});
@@ -957,7 +957,7 @@
     function showPre(){hasSub=false;if(a)a.hidden=true;if(p)p.hidden=false;}
     function showActive(d){
       hasSub=true;if(a)a.hidden=false;if(p)p.hidden=true;
-      window.ORBIUM_LINKS=(d.links||[]);
+      window.ORBIUM_LINKS=(d.links||[]);window.ORBIUM_SUB=(d.sub||'');
       var srvN=d.servers||(d.links?d.links.length:3);
       var el=document.getElementById('subDays');if(el)el.textContent=d.days;
       var chip=document.querySelector('.chipplan');if(chip)chip.dataset.days=Math.max(d.days,30);
