@@ -354,36 +354,6 @@
   .htoggle:active{transform:scale(.985);}
   .hcountry:active{transform:scale(.97);}
 
-  /* ===== payment method sheet ===== */
-  .paysheet{position:absolute;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;}
-  .paysheet[hidden]{display:none;}
-  .ps-scrim{position:absolute;inset:0;background:rgba(3,4,10,.66);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);animation:fade .2s ease;}
-  .ps-card{position:relative;z-index:1;width:100%;border-top-left-radius:26px;border-top-right-radius:26px;
-    background:linear-gradient(180deg,#14151f,#0c0d16);border:1px solid var(--hair-2);border-bottom:none;
-    padding:14px 20px calc(var(--safe-bot) + 22px);box-shadow:0 -24px 60px rgba(0,0,0,.6);animation:sheetUp .42s var(--ease) both;}
-  @keyframes sheetUp{from{transform:translateY(100%);}to{transform:none;}}
-  .ps-grab{width:42px;height:4px;border-radius:99px;background:rgba(255,255,255,.18);margin:0 auto 16px;}
-  .ps-h{font-family:'Sora','Inter',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.01em;}
-  .ps-sub{font-size:13.5px;color:var(--mut);margin:4px 0 18px;}
-  .ps-row{width:100%;display:flex;align-items:center;gap:14px;padding:14px 15px;margin-bottom:11px;border-radius:16px;
-    background:rgba(255,255,255,.05);border:1px solid var(--hair);cursor:pointer;font-family:inherit;color:var(--txt);
-    transition:transform .28s var(--ease),background-color .2s,border-color .2s;}
-  .ps-row:active{transform:scale(.98);background:rgba(255,255,255,.09);}
-  .ps-ic{width:46px;height:46px;border-radius:13px;flex:0 0 auto;display:grid;place-items:center;background:#fff;}
-  .ps-ic--crypto{background:#F7931A;color:#fff;font-family:'Sora','Inter';font-weight:800;font-size:23px;}
-  .ps-nm{flex:1;text-align:left;font-size:16px;font-weight:600;}
-  .ps-pr{font-size:15.5px;font-weight:700;font-variant-numeric:tabular-nums;}
-  .ps-cv{width:18px;height:18px;color:var(--mut);flex:0 0 auto;}
-  .ps-oferta{font-size:12.5px;color:var(--mut);text-align:center;margin-top:10px;line-height:1.5;}
-  .ps-oferta a{color:var(--accent-2);text-decoration:none;}
-  .ic-sbp{display:flex;gap:2.5px;align-items:flex-end;height:23px;}
-  .ic-sbp i{width:5px;border-radius:1.5px;transform:skewX(-15deg);}
-  .ic-sbp i:nth-child(1){height:11px;background:#1BA538;}
-  .ic-sbp i:nth-child(2){height:17px;background:#00A0C6;}
-  .ic-sbp i:nth-child(3){height:23px;background:#1F6FEB;}
-  .ic-sbp i:nth-child(4){height:15px;background:#8A2BE2;}
-  .ic-card svg{width:26px;height:26px;color:#1F6FEB;}
-
   /* ============ LIVING LAYER — дышащий орб + фон ============ */
   /* орб: медленное «дыхание» свечения */
   .orb{animation:orbBreath 6s var(--ease-out) infinite;}
@@ -643,35 +613,6 @@
       <button data-view="v-ref"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Пригласить</button>
       <button data-view="v-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>Ещё</button>
     </nav>
-
-    <!-- ===== экран выбора способа оплаты ===== -->
-    <div class="paysheet" id="paySheet" hidden>
-      <div class="ps-scrim" id="psScrim"></div>
-      <div class="ps-card">
-        <div class="ps-grab"></div>
-        <div class="ps-h">Выбор способа оплаты</div>
-        <div class="ps-sub" id="psSub">Orbium VPN</div>
-        <button class="ps-row" data-m="sbp">
-          <span class="ps-ic"><span class="ic-sbp"><i></i><i></i><i></i><i></i></span></span>
-          <span class="ps-nm">СБП</span>
-          <span class="ps-pr psPrice">0 ₽</span>
-          <svg class="ps-cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-        <button class="ps-row" data-m="card">
-          <span class="ps-ic ic-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></span>
-          <span class="ps-nm">Банковская карта</span>
-          <span class="ps-pr psPrice">0 ₽</span>
-          <svg class="ps-cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-        <button class="ps-row" data-m="crypto">
-          <span class="ps-ic ps-ic--crypto">₿</span>
-          <span class="ps-nm">Криптовалюта</span>
-          <span class="ps-pr psPrice">0 ₽</span>
-          <svg class="ps-cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-        <div class="ps-oferta">Оплачивая, вы соглашаетесь с <a href="#" id="psOferta">офертой</a></div>
-      </div>
-    </div>
   </div>
 
 <script>
@@ -784,10 +725,10 @@
     if(already) startPay();   // повторный тап по выбранному тарифу → сразу оплата
   }));
 
-  // ── оплата: выбор метода → n8n создаёт платёж → открываем ссылку ──
+  // ── оплата: тариф → n8n создаёт платёж → открывается окно Platega (метод выбирается там) ──
   const PAY_CREATE_URL='https://tarhanfaz98.app.n8n.cloud/webhook/orbium-pay-create';
   const PLAN_CODE={350:'1m',900:'3m',1590:'6m',2690:'12m'};
-  function _doPay(method){
+  function startPay(){
     var payBtn=document.getElementById('payBtn');
     var tg=window.Telegram&&window.Telegram.WebApp;
     var uid='';try{uid=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id||'');}catch(e){}
@@ -795,38 +736,20 @@
     var ref='';try{ref=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param||'');}catch(e){}
     var plan=PLAN_CODE[selectedPrice()];
     if(!plan){notify(L('Выберите тариф.','Select a plan.'));return;}
+    try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
     var payLabel=payBtn?payBtn.innerHTML:'';
-    if(payBtn){payBtn.disabled=true;payBtn.textContent=L('Создаём оплату…','Creating payment…');}
-    fetch(PAY_CREATE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tgId:uid,plan:plan,method:method,referrer:ref})})
+    if(payBtn){payBtn.disabled=true;payBtn.textContent=L('Открываем оплату…','Opening payment…');}
+    fetch(PAY_CREATE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tgId:uid,plan:plan,referrer:ref})})
       .then(function(r){return r.json();})
       .then(function(d){
-        if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}updatePay();
+        if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}
         if(d&&d.url){try{window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');}catch(e){}
           if(tg&&tg.openLink)tg.openLink(d.url);else window.open(d.url,'_blank');}
         else notify(L('Не удалось создать оплату. Попробуйте ещё раз.','Could not create payment. Try again.'));
       })
-      .catch(function(){if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}updatePay();notify(L('Ошибка сети. Попробуйте ещё раз.','Network error. Try again.'));});
+      .catch(function(){if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}notify(L('Ошибка сети. Попробуйте ещё раз.','Network error. Try again.'));});
   }
-  const PLAN_NAME={'1m':['1 месяц','1 month'],'3m':['3 месяца','3 months'],'6m':['6 месяцев','6 months'],'12m':['1 год','1 year']};
-  function closePaySheet(){var s=document.getElementById('paySheet');if(s)s.hidden=true;}
-  function startPay(){
-    var price=selectedPrice();
-    if(!PLAN_CODE[price]){notify(L('Выберите тариф.','Select a plan.'));return;}
-    try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
-    var nm=PLAN_NAME[PLAN_CODE[price]];
-    var sub=document.getElementById('psSub');if(sub&&nm)sub.textContent='Orbium VPN · '+L(nm[0],nm[1]);
-    document.querySelectorAll('#paySheet .psPrice').forEach(function(el){el.textContent=fmt(price);});
-    var s=document.getElementById('paySheet');if(s)s.hidden=false;
-  }
-  (function(){
-    var payBtn=document.getElementById('payBtn');if(payBtn)payBtn.addEventListener('click',startPay);
-    document.querySelectorAll('#paySheet .ps-row').forEach(function(r){r.addEventListener('click',function(){
-      try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
-      closePaySheet();_doPay(r.dataset.m);
-    });});
-    var sc=document.getElementById('psScrim');if(sc)sc.addEventListener('click',closePaySheet);
-    var of=document.getElementById('psOferta');if(of)of.addEventListener('click',function(e){e.preventDefault();openLink('https://telegra.ph/Polzovatelskoe-soglashenie--Orbium-VPN-07-02');});
-  })();
+  (function(){var payBtn=document.getElementById('payBtn');if(payBtn)payBtn.addEventListener('click',startPay);})();
 
   // copy helpers
   function notify(msg){try{if(window.Telegram?.WebApp?.showAlert){window.Telegram.WebApp.showAlert(msg);return;}}catch(e){}alert(msg);}
