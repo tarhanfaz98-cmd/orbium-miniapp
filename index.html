@@ -562,7 +562,7 @@
           </div>
 
           <div class="reflink">
-            <span class="u" id="refurl">t.me/Orbium_77bot?start=ref_8421</span>
+            <span class="u" id="refurl">t.me/Orbium_77bot</span>
             <button id="refCopy" aria-label="Скопировать ссылку"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
           </div>
 
@@ -981,6 +981,22 @@
     }catch(e){}
   })();
   var _cp=document.getElementById('choosePlan');if(_cp)_cp.addEventListener('click',function(){document.querySelector('.nav button[data-view="v-tariffs"]').click();});
+  // ── реферальная ссылка (с моим ID) + реальные бонусы ──
+  (function(){
+    var tg=window.Telegram&&window.Telegram.WebApp;
+    var uid='';try{uid=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id||'');}catch(e){}
+    var ru=document.getElementById('refurl');
+    if(ru&&uid)ru.textContent='t.me/Orbium_77bot?startapp='+uid;
+    try{
+      var initData=(tg&&tg.initData)||'';
+      if(initData){
+        fetch('https://tarhanfaz98.app.n8n.cloud/webhook/orbium-bonus-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData})})
+          .then(function(r){return r.json();})
+          .then(function(d){if(d){bonus=Number(d.balance||0);refEarnedTotal=Number(d.earned||0);refInvited=Number(d.invited||0);if(typeof renderBonus==='function')renderBonus();}})
+          .catch(function(){});
+      }
+    }catch(e){}
+  })();
   applyLang(lang);  // apply saved language on load
 </script>
 </body>
