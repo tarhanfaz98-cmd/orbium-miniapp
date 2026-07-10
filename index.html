@@ -433,7 +433,7 @@
           <div class="keycard">
             <div class="keyrow">
               <span class="kic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2"/><path d="m16 6 3 3"/><path d="m18 8 2-2"/></svg></span>
-              <span class="ku" id="subKey">Orbium Multi · 3 сервера · NL / FI / NL</span>
+              <span class="ku" id="subKey">Orbium · 3 сервера · Германия</span>
               <button class="kcp" id="keyCopy" aria-label="Скопировать ключ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
             </div>
             <button class="btn primary" id="addHapp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6"/><path d="M12 9v6"/><rect x="4" y="4" width="16" height="16" rx="3"/></svg>Скопировать ключ</button>
@@ -824,9 +824,9 @@
   ].join('\n');
   const STATUS_URL=(window.ORBIUM_STATUS_URL||'https://app.orbiumvpn.com/servers.json');
   const SERVER_STATUS_FALLBACK=[
-    {name:'Нидерланды', flag:'🇳🇱', subtitle:'основной сервер · active', latency_ms:58, load_percent:34, status:'online', recommended:true},
-    {name:'Финляндия', flag:'🇫🇮', subtitle:'1 сервер · active', latency_ms:71, load_percent:41, status:'online', recommended:false},
-    {name:'Нидерланды 2', flag:'🇳🇱', subtitle:'1 сервер · active', latency_ms:83, load_percent:49, status:'online', recommended:false}
+    {name:'Германия 1', flag:'🇩🇪', subtitle:'основной сервер · active', latency_ms:52, load_percent:34, status:'online', recommended:true},
+    {name:'Германия 2', flag:'🇩🇪', subtitle:'1 сервер · active', latency_ms:60, load_percent:41, status:'online', recommended:false},
+    {name:'Германия 3', flag:'🇩🇪', subtitle:'1 сервер · active', latency_ms:68, load_percent:39, status:'online', recommended:false}
   ];
   const SUBSCRIPTION_LINKS={
     'Orbium-WS-NL-Primary':'vless://11111111-1111-4111-8111-111111111111@78.17.153.159:443?encryption=none&security=none&type=ws&host=78.17.153.159&path=%2Forbium#Orbium-WS-NL-Primary',
@@ -933,7 +933,7 @@
   (function(){
     var kEl=document.getElementById('subKey');
     var kc=document.getElementById('keyCopy'), ah=document.getElementById('addHapp');
-    function fullKey(){return getSubscriptionBundle();}
+    function fullKey(){return (window.ORBIUM_LINKS&&window.ORBIUM_LINKS.length)?window.ORBIUM_LINKS.join('\n'):getSubscriptionBundle();}
     if(kc)kc.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);});
     if(kc)kc.addEventListener('click',function(){notify(COPY_GUIDE());});
     if(ah)ah.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);notify(COPY_GUIDE());});
@@ -949,9 +949,37 @@
   window.addEventListener('load',initInds);
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(initInds);
   window.addEventListener('resize',initInds);
-  var hasSub=true; // manual test mode: first VPN key is active
-  (function(){var a=document.getElementById('homeActive'),p=document.getElementById('homePre');if(a)a.hidden=!hasSub;if(p)p.hidden=hasSub;
-    var el=document.getElementById('subDays');if(el)el.textContent=planTotal();})(); // ДЕМО: без бэкенда показываем пред-запуск; активная панель — за hasSub
+  // ── реальный статус подписки: спрашиваем n8n по подписи Telegram ──
+  var hasSub=false; window.ORBIUM_LINKS=null;
+  const SUB_STATUS_URL='https://tarhanfaz98.app.n8n.cloud/webhook/orbium-sub-status';
+  (function(){
+    var a=document.getElementById('homeActive'),p=document.getElementById('homePre');
+    function showPre(){hasSub=false;if(a)a.hidden=true;if(p)p.hidden=false;}
+    function showActive(d){
+      hasSub=true;if(a)a.hidden=false;if(p)p.hidden=true;
+      window.ORBIUM_LINKS=(d.links||[]);
+      var srvN=d.servers||(d.links?d.links.length:3);
+      var el=document.getElementById('subDays');if(el)el.textContent=d.days;
+      var chip=document.querySelector('.chipplan');if(chip)chip.dataset.days=Math.max(d.days,30);
+      var kEl=document.getElementById('subKey');if(kEl)kEl.textContent='Orbium · '+srvN+' '+pluralRu(srvN,['сервер','сервера','серверов'])+' · '+L('Германия','Germany');
+      if(d.links&&d.links.length){
+        var srv=d.links.map(function(l,i){var nm=decodeURIComponent((l.split('#')[1]||('Германия '+(i+1)))).replace('Orbium','').trim();
+          return {name:nm,flag:'🇩🇪',subtitle:L('1 сервер · active','1 server · active'),latency_ms:50+i*8,load_percent:30+i*7,status:'online',recommended:i===0};});
+        if(typeof renderServerStatus==='function')renderServerStatus(srv);
+      }
+      if(typeof renderDays==='function')renderDays();
+    }
+    showPre();
+    try{
+      var initData=(window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.initData)||'';
+      if(initData){
+        fetch(SUB_STATUS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData})})
+          .then(function(r){return r.json();})
+          .then(function(d){if(d&&d.active)showActive(d);})
+          .catch(function(){});
+      }
+    }catch(e){}
+  })();
   var _cp=document.getElementById('choosePlan');if(_cp)_cp.addEventListener('click',function(){document.querySelector('.nav button[data-view="v-tariffs"]').click();});
   applyLang(lang);  // apply saved language on load
 </script>
