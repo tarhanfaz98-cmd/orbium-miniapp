@@ -712,7 +712,7 @@
   function updatePay(){
     const price=selectedPrice();
     const ub=document.getElementById('useBonus');
-    const applied=(ub&&ub.checked)?Math.min(bonus,price):0;
+    const applied=(ub&&ub.checked)?Math.min(bonus,Math.floor(price*0.5)):0;
     const ba=document.getElementById('bonusApply');if(ba)ba.textContent=applied.toLocaleString('ru-RU');
     document.getElementById('payPrice').textContent=fmt(price-applied);
   }
@@ -739,7 +739,8 @@
     try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
     var payLabel=payBtn?payBtn.innerHTML:'';
     if(payBtn){payBtn.disabled=true;payBtn.textContent=L('Открываем оплату…','Opening payment…');}
-    fetch(PAY_CREATE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tgId:uid,plan:plan,referrer:ref})})
+    var initData=(tg&&tg.initData)||'';var _ub=document.getElementById('useBonus');var useBonus=!!(_ub&&_ub.checked);
+    fetch(PAY_CREATE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tgId:uid,plan:plan,referrer:ref,initData:initData,useBonus:useBonus})})
       .then(function(r){return r.json();})
       .then(function(d){
         if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}
