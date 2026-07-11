@@ -884,9 +884,12 @@
       .filter(Boolean)
       .join('\n');
   }
+  function getCopyKey(){
+    return window.ORBIUM_SUB || ((window.ORBIUM_LINKS&&window.ORBIUM_LINKS.length)?window.ORBIUM_LINKS.join('\n'):getSubscriptionBundle());
+  }
   function COPY_GUIDE(){return L('Открой Streisand → нажми + → Import from Clipboard / Вставить из буфера. В буфере уже 3 рабочие ноды.','Open Streisand → tap + → Import from Clipboard / Paste from clipboard. The clipboard already contains 3 working nodes.');}
-  document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();copyText(getSubscriptionBundle());notify(COPY_GUIDE());});
-  document.getElementById('keyBtn').addEventListener('click',()=>{copyText(getSubscriptionBundle());notify(COPY_GUIDE());});
+  document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();copyText(getCopyKey());notify(COPY_GUIDE());});
+  document.getElementById('keyBtn').addEventListener('click',()=>{copyText(getCopyKey());notify(COPY_GUIDE());});
 
   // ── «Ещё» actions ──
   const SUPPORT_URL='https://t.me/Orbium_supportbot';
@@ -937,7 +940,7 @@
   (function(){
     var kEl=document.getElementById('subKey');
     var kc=document.getElementById('keyCopy'), ah=document.getElementById('addHapp');
-    function fullKey(){return window.ORBIUM_SUB || ((window.ORBIUM_LINKS&&window.ORBIUM_LINKS.length)?window.ORBIUM_LINKS.join('\n'):getSubscriptionBundle());}
+    function fullKey(){return getCopyKey();}
     if(kc)kc.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);});
     if(kc)kc.addEventListener('click',function(){notify(COPY_GUIDE());});
     if(ah)ah.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);notify(COPY_GUIDE());});
