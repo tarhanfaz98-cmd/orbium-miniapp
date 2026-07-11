@@ -408,7 +408,7 @@
           </div>
           <div class="divider"></div>
 
-          <div id="homePre">
+          <div id="homePre" hidden>
             <div class="status">
               <div class="top">
                 <div class="act pre"><span class="dot"></span>ПОДПИСКА НЕ АКТИВНА</div>
@@ -981,16 +981,15 @@
       }
       if(typeof renderDays==='function')renderDays();
     }
-    showPre();
     try{
       var initData=(window.Telegram&&window.Telegram.WebApp&&window.Telegram.WebApp.initData)||'';
       if(initData){
         fetch(SUB_STATUS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData})})
           .then(function(r){return r.json();})
-          .then(function(d){if(d&&d.active)showActive(d);})
-          .catch(function(){});
-      }
-    }catch(e){}
+          .then(function(d){if(d&&d.active)showActive(d);else showPre();})
+          .catch(function(){showPre();});
+      } else { showPre(); }
+    }catch(e){showPre();}
   })();
   var _cp=document.getElementById('choosePlan');if(_cp)_cp.addEventListener('click',function(){document.querySelector('.nav button[data-view="v-tariffs"]').click();});
   // ── реферальная ссылка (с моим ID) + реальные бонусы ──
