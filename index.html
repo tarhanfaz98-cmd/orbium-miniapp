@@ -354,6 +354,15 @@
   .htoggle:active{transform:scale(.985);}
   .hcountry:active{transform:scale(.97);}
 
+  /* промо-баннер первым 50 */
+  .promobar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px;padding:13px 16px;border-radius:16px;
+    background:linear-gradient(120deg,rgba(255,120,60,.22),rgba(255,60,140,.16),rgba(154,107,255,.14));
+    border:1px solid rgba(255,140,80,.4);box-shadow:0 10px 30px rgba(255,90,60,.18),inset 0 1px 0 rgba(255,255,255,.1);
+    font-size:14px;font-weight:600;color:#ffd9c2;}
+  .promobar[hidden]{display:none;}
+  .promobar b{color:#fff;font-weight:800;white-space:nowrap;}
+  .promobar .pl{font-variant-numeric:tabular-nums;}
+
   /* ============ LIVING LAYER — дышащий орб + фон ============ */
   /* орб: медленное «дыхание» свечения */
   .orb{animation:orbBreath 6s var(--ease-out) infinite;}
@@ -499,6 +508,7 @@
         <section class="view" id="v-tariffs">
           <div class="vtitle">Тарифы</div>
           <div class="vsub">Безлимит, до 2 устройств.</div>
+          <div class="promobar" id="promoBar" hidden><span>🔥 Скидка <b>−25%</b> первым 50 клиентам</span><b>осталось <span class="pl" id="promoLeft">—</span></b></div>
 
           <div class="plan" data-price="350">
             <span class="radio"></span>
@@ -706,7 +716,8 @@
   const fmt=n=>n.toLocaleString('ru-RU')+' ₽';
   function selectedPrice(){const p=document.querySelector('.plan.sel');return p?+p.dataset.price:0;}
   function updatePay(){
-    const price=selectedPrice();
+    const price0=selectedPrice();
+    const price=(window.PROMO&&window.PROMO.active)?Math.round(price0*0.75):price0;
     const ub=document.getElementById('useBonus');
     const applied=(ub&&ub.checked)?Math.min(bonus,Math.floor(price*0.5)):0;
     const ba=document.getElementById('bonusApply');if(ba)ba.textContent=applied.toLocaleString('ru-RU');
@@ -999,6 +1010,14 @@
           .catch(function(){});
       }
     }catch(e){}
+  })();
+  // промо «первым 50 — 25%»
+  (function(){
+    fetch('https://tarhanfaz98.app.n8n.cloud/webhook/orbium-promo').then(function(r){return r.json();}).then(function(d){
+      window.PROMO=d;
+      if(d&&d.active){var b=document.getElementById('promoBar');if(b)b.hidden=false;var l=document.getElementById('promoLeft');if(l)l.textContent=d.left;}
+      if(typeof updatePay==='function')updatePay();
+    }).catch(function(){});
   })();
   applyLang(lang);  // apply saved language on load
 </script>
