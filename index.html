@@ -825,21 +825,11 @@
   });
   renderBonus();
 
-  const SUBSCRIPTION_BUNDLE=[
-    'vless://11111111-1111-4111-8111-111111111111@78.17.153.159:443?encryption=none&security=none&type=ws&host=78.17.153.159&path=%2Forbium#Orbium-WS-NL-Primary',
-    'vless://22222222-2222-4222-8222-222222222222@45.129.124.29:443?encryption=none&security=none&type=ws&host=45.129.124.29&path=%2Forbium-n1#Orbium-WS-FI-1',
-    'vless://22222222-2222-4222-8222-222222222222@45.9.117.55:443?encryption=none&security=none&type=ws&host=45.9.117.55&path=%2Forbium-n1#Orbium-WS-NL-2'
-  ].join('\n');
   const STATUS_URL=(window.ORBIUM_STATUS_URL||'https://app.orbiumvpn.com/servers.json');
   const SERVER_STATUS_FALLBACK=[
     {name:'Германия', flag:'🇩🇪', subtitle:'3 сервера · active', status:'online', recommended:true},
     {name:'Нидерланды', flag:'🇳🇱', subtitle:'1 сервер · active', status:'online', recommended:false}
   ];
-  const SUBSCRIPTION_LINKS={
-    'Orbium-WS-NL-Primary':'vless://11111111-1111-4111-8111-111111111111@78.17.153.159:443?encryption=none&security=none&type=ws&host=78.17.153.159&path=%2Forbium#Orbium-WS-NL-Primary',
-    'Orbium-WS-FI-1':'vless://22222222-2222-4222-8222-222222222222@45.129.124.29:443?encryption=none&security=none&type=ws&host=45.129.124.29&path=%2Forbium-n1#Orbium-WS-FI-1',
-    'Orbium-WS-NL-2':'vless://22222222-2222-4222-8222-222222222222@45.9.117.55:443?encryption=none&security=none&type=ws&host=45.9.117.55&path=%2Forbium-n1#Orbium-WS-NL-2'
-  };
   let latestServerStatus=SERVER_STATUS_FALLBACK.slice();
   function serverMetricText(s){
     return (s.status||'online')==='offline'?L('офлайн','offline'):('🟢 '+L('онлайн','online'));
@@ -876,20 +866,21 @@
       renderServerStatus(SERVER_STATUS_FALLBACK);
     }
   }
-  function getSubscriptionBundle(){
-    const online=latestServerStatus.filter((s)=>s.status==='online');
-    const source=online.length?online:latestServerStatus;
-    return source
-      .map((s)=>SUBSCRIPTION_LINKS[s.subscription_name])
-      .filter(Boolean)
-      .join('\n');
-  }
+  // Возвращает ТОЛЬКО реальный ключ подписки (sub-URL или живые vless-ссылки).
+  // Никаких заглушек: если ключа нет — пусто, кнопка попросит оформить подписку.
   function getCopyKey(){
-    return window.ORBIUM_SUB || ((window.ORBIUM_LINKS&&window.ORBIUM_LINKS.length)?window.ORBIUM_LINKS.join('\n'):getSubscriptionBundle());
+    if(window.ORBIUM_SUB) return window.ORBIUM_SUB;
+    if(window.ORBIUM_LINKS&&window.ORBIUM_LINKS.length) return window.ORBIUM_LINKS.join('\n');
+    return '';
   }
-  function COPY_GUIDE(){return L('Открой Streisand → нажми + → Import from Clipboard / Вставить из буфера. В буфере уже 3 рабочие ноды.','Open Streisand → tap + → Import from Clipboard / Paste from clipboard. The clipboard already contains 3 working nodes.');}
-  document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();copyText(getCopyKey());notify(COPY_GUIDE());});
-  document.getElementById('keyBtn').addEventListener('click',()=>{copyText(getCopyKey());notify(COPY_GUIDE());});
+  function copyKeyOrWarn(btn){
+    var k=getCopyKey();
+    if(!k){notify(L('Ключ появится здесь после оплаты подписки. Выбери тариф на вкладке «Тарифы».','Your key appears here after you buy a subscription. Pick a plan on the “Plans” tab.'));return false;}
+    copyText(k,btn);notify(COPY_GUIDE());return true;
+  }
+  function COPY_GUIDE(){return L('Ключ скопирован. Открой V2rayTun или Happ → «+» → «Добавить подписку / из буфера» → вставь и подключайся.','Key copied. Open V2rayTun or Happ → “+” → “Add subscription / from clipboard” → paste and connect.');}
+  document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();copyKeyOrWarn(e.currentTarget);});
+  document.getElementById('keyBtn').addEventListener('click',e=>{copyKeyOrWarn(e.currentTarget);});
 
   // ── «Ещё» actions ──
   const SUPPORT_URL='https://t.me/Orbium_supportbot';
@@ -940,10 +931,8 @@
   (function(){
     var kEl=document.getElementById('subKey');
     var kc=document.getElementById('keyCopy'), ah=document.getElementById('addHapp');
-    function fullKey(){return getCopyKey();}
-    if(kc)kc.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);});
-    if(kc)kc.addEventListener('click',function(){notify(COPY_GUIDE());});
-    if(ah)ah.addEventListener('click',function(e){copyText(fullKey(),e.currentTarget);notify(COPY_GUIDE());});
+    if(kc)kc.addEventListener('click',function(e){copyKeyOrWarn(e.currentTarget);});
+    if(ah)ah.addEventListener('click',function(e){copyKeyOrWarn(e.currentTarget);});
   })();
 
   // place sliding indicators from real layout (re-run after fonts settle)
