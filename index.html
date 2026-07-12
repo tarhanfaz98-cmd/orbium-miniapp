@@ -385,6 +385,11 @@
   @keyframes bgDriftTop{0%,100%{opacity:.72;}50%{opacity:.9;}}
   .app::after{animation:bgGlow 14s ease-in-out infinite;}
   @keyframes bgGlow{0%,100%{opacity:.8;}50%{opacity:1;}}
+  .sk{position:relative;overflow:hidden;background:rgba(255,255,255,.055);border-radius:12px;}
+  .sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.09),transparent);animation:shimmer 1.5s infinite;}
+  @keyframes shimmer{100%{transform:translateX(100%);}}
+  #homeSkeleton[hidden]{display:none;}
 </style>
 </head>
 <body>
@@ -407,6 +412,21 @@
             <div class="uchip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span id="uchipName">Orbium</span></div>
           </div>
           <div class="divider"></div>
+
+          <div id="homeSkeleton" aria-hidden="true">
+            <div class="hstatus">
+              <div class="sk" style="height:15px;width:42%"></div>
+              <div class="sk" style="height:30px;width:52%;margin-top:14px"></div>
+              <div class="sk" style="height:6px;width:100%;margin-top:16px;border-radius:99px"></div>
+            </div>
+            <div class="hsect">Ваш ключ доступа</div>
+            <div class="keycard">
+              <div class="sk" style="height:44px;border-radius:14px"></div>
+              <div class="sk" style="height:48px;margin-top:11px;border-radius:14px"></div>
+            </div>
+            <div class="hsect">Подключение</div>
+            <div class="sk" style="height:66px;border-radius:18px"></div>
+          </div>
 
           <div id="homePre" hidden>
             <div class="status">
@@ -449,7 +469,7 @@
             <button class="htoggle">
               <span class="hic globe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></span>
               <span class="htt"><span class="hh">Доступные страны</span><span class="hs">8 серверов в 4 странах · активны сейчас</span></span>
-              <span class="hflags">🇳🇱🇫🇮🇳🇱</span>
+              <span class="hflags">🇩🇪🇫🇷🇬🇧🇳🇱</span>
               <span class="hchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
             </button>
             <div class="hgrid" id="serverGrid"></div>
@@ -952,9 +972,10 @@
   const SUB_STATUS_URL='https://tarhanfaz98.app.n8n.cloud/webhook/orbium-sub-status';
   (function(){
     var a=document.getElementById('homeActive'),p=document.getElementById('homePre');
-    function showPre(){hasSub=false;if(a)a.hidden=true;if(p)p.hidden=false;}
+    var sk=document.getElementById('homeSkeleton');
+    function showPre(){hasSub=false;if(sk)sk.hidden=true;if(a)a.hidden=true;if(p)p.hidden=false;}
     function showActive(d){
-      hasSub=true;if(a)a.hidden=false;if(p)p.hidden=true;
+      hasSub=true;if(sk)sk.hidden=true;if(a)a.hidden=false;if(p)p.hidden=true;
       window.ORBIUM_LINKS=(d.links||[]);window.ORBIUM_SUB=(d.sub||'');
       var srvN=d.servers||(d.links?d.links.length:3);
       var el=document.getElementById('subDays');if(el)el.textContent=d.days;
