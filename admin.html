@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orbium · Панель</title>
+<style>
+  :root{
+    --bg:#0a0b12;--panel:rgba(255,255,255,.045);--panel2:rgba(255,255,255,.07);
+    --hair:rgba(255,255,255,.09);--txt:#eef0f7;--dim:#9aa0b4;--mut:#6b7186;
+    --accent:#7c5cff;--accent2:#5b8cff;--ok:#3ce6a6;--warn:#ffb84d;--bad:#ff5b6e;
+    --r:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:
+    radial-gradient(1100px 700px at 15% -10%,rgba(124,92,255,.18),transparent 55%),
+    radial-gradient(900px 600px at 110% 0%,rgba(91,140,255,.14),transparent 50%),
+    var(--bg);
+    color:var(--txt);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;min-height:100dvh}
+  a{color:inherit}
+  .wrap{max-width:1160px;margin:0 auto;padding:20px 16px 60px}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:11px}
+  .orb{width:34px;height:34px;border-radius:11px;background:conic-gradient(from 210deg,#7c5cff,#5b8cff,#7c5cff);
+    box-shadow:0 6px 20px rgba(124,92,255,.4);position:relative;overflow:hidden}
+  .orb::after{content:"";position:absolute;inset:2px;border-radius:9px;background:radial-gradient(circle at 32% 28%,rgba(255,255,255,.55),transparent 45%)}
+  .brand b{font-size:17px;font-weight:700;letter-spacing:.2px}
+  .brand span{display:block;font-size:11px;color:var(--mut);font-weight:500;margin-top:1px}
+  .live{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--dim);background:var(--panel);
+    border:1px solid var(--hair);padding:8px 13px;border-radius:999px}
+  .live .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 9px var(--ok);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .refresh{cursor:pointer;border:1px solid var(--hair);background:var(--panel);color:var(--dim);
+    width:38px;height:38px;border-radius:11px;display:grid;place-items:center;transition:.2s}
+  .refresh:active{transform:scale(.93);background:var(--panel2)}
+  .refresh svg{width:17px;height:17px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  @media(max-width:720px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--panel);border:1px solid var(--hair);border-radius:var(--r);padding:16px 16px 15px;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);position:relative;overflow:hidden}
+  .kpi .lbl{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:7px;font-weight:500}
+  .kpi .lbl svg{width:15px;height:15px;opacity:.8}
+  .kpi .val{font-size:30px;font-weight:700;margin-top:9px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
+  .kpi .sub{font-size:12px;color:var(--dim);margin-top:3px;font-variant-numeric:tabular-nums}
+  .kpi.accent .val{color:#c3b6ff}
+  .section{margin-top:22px}
+  .section h2{font-size:13px;text-transform:uppercase;letter-spacing:.9px;color:var(--mut);margin:0 0 11px 2px;font-weight:600}
+  .alerts{display:flex;flex-direction:column;gap:9px}
+  .alert{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--hair);
+    border-left:3px solid var(--warn);border-radius:13px;padding:13px 15px;font-size:14px}
+  .alert.bad{border-left-color:var(--bad)}
+  .alert svg{width:19px;height:19px;flex:0 0 auto}
+  .alert b{font-variant-numeric:tabular-nums}
+  .alert .who{color:var(--dim);font-size:12.5px;margin-left:auto;font-variant-numeric:tabular-nums;text-align:right}
+  .card{background:var(--panel);border:1px solid var(--hair);border-radius:var(--r);overflow:hidden;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .tblwrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);
+    font-weight:600;padding:13px 16px;border-bottom:1px solid var(--hair);white-space:nowrap}
+  td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.045);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .tg{font-variant-numeric:tabular-nums;font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  .gb{font-variant-numeric:tabular-nums;color:var(--dim)}
+  .badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:600;border:1px solid transparent}
+  .b-ok{background:rgba(60,230,166,.13);color:#5df0bb;border-color:rgba(60,230,166,.22)}
+  .b-warn{background:rgba(255,184,77,.13);color:#ffca7a;border-color:rgba(255,184,77,.22)}
+  .b-mut{background:rgba(255,255,255,.06);color:var(--mut)}
+  .on{display:inline-flex;align-items:center;gap:6px}
+  .on .d{width:7px;height:7px;border-radius:50%}
+  .on.now .d{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+  .on.off .d{background:var(--mut)}
+  .servers{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+  @media(max-width:720px){.servers{grid-template-columns:repeat(2,1fr)}}
+  .srv{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:14px}
+  .srv .fl{font-size:20px;line-height:1}
+  .srv .nm{font-size:13.5px;font-weight:600;margin-top:8px}
+  .srv .ip{font-size:11px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;margin-top:2px}
+  .srv .st{display:flex;align-items:center;gap:6px;margin-top:9px;font-size:11.5px;color:var(--dim)}
+  .srv .st .d{width:7px;height:7px;border-radius:50%}
+  .srv.up{border-color:rgba(60,230,166,.2)}
+  .srv.up .st .d{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+  .srv.down{border-color:rgba(255,91,110,.25)}
+  .srv.down .st{color:#ff8a97}.srv.down .st .d{background:var(--bad)}
+  .foot{text-align:center;color:var(--mut);font-size:11.5px;margin-top:26px}
+  .empty{padding:40px 16px;text-align:center;color:var(--mut);font-size:14px}
+  .err{margin:40px auto;max-width:420px;text-align:center;background:var(--panel);border:1px solid var(--hair);
+    border-radius:16px;padding:26px}
+  .err h3{margin:0 0 8px}.err p{color:var(--dim);font-size:13.5px;margin:0}
+  .skl{color:var(--mut)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="orb"></div>
+      <div><b>Orbium</b><span>Панель управления</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="live"><span class="dot"></span><span id="upd">загрузка…</span></div>
+      <button class="refresh" id="rf" aria-label="Обновить">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="root">
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">Онлайн</div><div class="val skl">—</div></div>
+      <div class="kpi"><div class="lbl">Клиентов</div><div class="val skl">—</div></div>
+      <div class="kpi"><div class="lbl">Трафик</div><div class="val skl">—</div></div>
+      <div class="kpi"><div class="lbl">Серверов</div><div class="val skl">—</div></div>
+    </div>
+  </div>
+
+  <div class="foot">Orbium Admin · обновляется автоматически каждые 30 сек</div>
+</div>
+
+<script>
+(function(){
+  var ENDPOINT="https://tarhanfaz98.app.n8n.cloud/webhook/orbium-stats";
+  var key=new URLSearchParams(location.search).get("key")||"";
+  var root=document.getElementById("root"), upd=document.getElementById("upd");
+
+  function esc(s){return String(s==null?"":s).replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c];});}
+  function ago(iso){
+    if(!iso) return "никогда";
+    var d=new Date(iso), s=(Date.now()-d.getTime())/1000;
+    if(s<0)s=0;
+    if(s<90) return "сейчас";
+    if(s<3600) return Math.floor(s/60)+" мин назад";
+    if(s<86400) return Math.floor(s/3600)+" ч назад";
+    return Math.floor(s/86400)+" дн назад";
+  }
+  function isOnline(iso){ if(!iso)return false; return (Date.now()-new Date(iso).getTime())/1000 < 90; }
+  function flagFor(name){
+    if(/нидерл|nl|🇳🇱/i.test(name))return"🇳🇱";
+    if(/франц|fr|🇫🇷/i.test(name))return"🇫🇷";
+    if(/британ|great|gb|uk|🇬🇧/i.test(name))return"🇬🇧";
+    return"🇩🇪";
+  }
+  function badgeApp(a){
+    a=(a||"").toLowerCase();
+    if(a==="streisand"||a==="happ") return '<span class="badge b-ok">'+esc(a)+'</span>';
+    if(a==="v2raytun"||a==="karing") return '<span class="badge b-warn">'+esc(a)+'</span>';
+    if(!a||a==="—") return '<span class="badge b-mut">—</span>';
+    return '<span class="badge b-mut">'+esc(a)+'</span>';
+  }
+
+  function render(d){
+    var sys=d.system||{}, users=d.users||[], nodes=d.nodes||[];
+    var onlineUsers=users.filter(function(u){return isOnline(u.online_at);}).length;
+    var upNodes=nodes.filter(function(n){return n.status==="connected";}).length;
+    var traf=(sys.up_gb||0)+(sys.down_gb||0);
+    // alerts
+    var oldApp=users.filter(function(u){return (u.app==="v2raytun"||u.app==="karing");});
+    var never=users.filter(function(u){return !u.online_at;});
+
+    var kpis=''+
+      '<div class="kpis">'+
+        '<div class="kpi accent"><div class="lbl">'+ic('bolt')+'Онлайн сейчас</div><div class="val">'+onlineUsers+'</div><div class="sub">из '+users.length+' клиентов</div></div>'+
+        '<div class="kpi"><div class="lbl">'+ic('users')+'Клиентов</div><div class="val">'+(sys.total!=null?sys.total:users.length)+'</div><div class="sub">активных подписок</div></div>'+
+        '<div class="kpi"><div class="lbl">'+ic('traf')+'Трафик</div><div class="val">'+traf.toFixed(1)+'<span style="font-size:15px;color:var(--dim)"> ГБ</span></div><div class="sub">↑'+(sys.up_gb||0).toFixed(1)+' ↓'+(sys.down_gb||0).toFixed(1)+'</div></div>'+
+        '<div class="kpi"><div class="lbl">'+ic('srv')+'Серверов</div><div class="val">'+upNodes+'<span style="font-size:15px;color:var(--dim)"> / '+nodes.length+'</span></div><div class="sub">'+(upNodes===nodes.length?'все онлайн':'⚠ есть офлайн')+'</div></div>'+
+      '</div>';
+
+    var alerts='';
+    if(oldApp.length||never.length){
+      alerts+='<div class="section"><h2>Требует внимания</h2><div class="alerts">';
+      if(oldApp.length) alerts+='<div class="alert">'+ic('warn')+'<div><b>'+oldApp.length+'</b> на V2rayTun/Karing — им нужно перейти на Happ/Streisand</div><div class="who">'+oldApp.map(function(u){return u.tg;}).join(', ')+'</div></div>';
+      if(never.length) alerts+='<div class="alert bad">'+ic('warn')+'<div><b>'+never.length+'</b> ни разу не подключались</div><div class="who">'+never.map(function(u){return u.tg;}).join(', ')+'</div></div>';
+      alerts+='</div></div>';
+    }
+
+    var rows=users.slice().sort(function(a,b){return (new Date(b.online_at||0))-(new Date(a.online_at||0));}).map(function(u){
+      var on=isOnline(u.online_at);
+      return '<tr>'+
+        '<td class="tg">'+esc(u.tg)+'</td>'+
+        '<td>'+badgeApp(u.app)+'</td>'+
+        '<td><span class="on '+(on?'now':'off')+'"><span class="d"></span>'+ago(u.online_at)+'</span></td>'+
+        '<td class="gb">'+(u.gb||0).toFixed(2)+' ГБ</td>'+
+        '<td>'+(u.status==="active"?'<span class="badge b-ok">актив</span>':'<span class="badge b-mut">'+esc(u.status)+'</span>')+'</td>'+
+      '</tr>';
+    }).join('');
+    var table='<div class="section"><h2>Клиенты · кто · чем · когда</h2><div class="card"><div class="tblwrap">'+
+      '<table><thead><tr><th>Telegram ID</th><th>Приложение</th><th>Последний онлайн</th><th>Трафик</th><th>Статус</th></tr></thead>'+
+      '<tbody>'+(rows||'<tr><td colspan="5" class="empty">Пока нет клиентов</td></tr>')+'</tbody></table></div></div></div>';
+
+    var srv='<div class="section"><h2>Серверы · '+nodes.length+'</h2><div class="servers">'+
+      nodes.map(function(n){
+        var up=n.status==="connected";
+        return '<div class="srv '+(up?'up':'down')+'"><div class="fl">'+flagFor(n.name)+'</div>'+
+          '<div class="nm">'+esc(n.name.replace("Orbium ","").replace("NEW-",""))+'</div>'+
+          '<div class="ip">'+esc(n.ip)+'</div>'+
+          '<div class="st"><span class="d"></span>'+(up?'онлайн':'офлайн')+' · xray '+esc(n.xray||'?')+'</div></div>';
+      }).join('')+'</div></div>';
+
+    root.innerHTML=kpis+alerts+table+srv;
+    upd.textContent="обновлено "+new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  }
+
+  function ic(n){
+    var p={
+      bolt:'<path d="M13 2 3 14h7l-1 8 10-12h-7z"/>',
+      users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+      traf:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+      srv:'<rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><path d="M6 6h.01M6 18h.01"/>',
+      warn:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>'
+    };
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(p[n]||'')+'</svg>';
+  }
+
+  function load(){
+    if(!key){ root.innerHTML='<div class="err"><h3>Нужен ключ доступа</h3><p>Открой ссылку с параметром <b>?key=…</b></p></div>'; upd.textContent="нет ключа"; return; }
+    upd.textContent="обновление…";
+    fetch(ENDPOINT+"?key="+encodeURIComponent(key)+"&_="+Date.now(),{cache:"no-store"})
+      .then(function(r){return r.json();})
+      .then(function(d){ if(d.error){throw new Error(d.error);} render(d); })
+      .catch(function(e){ root.innerHTML='<div class="err"><h3>Не удалось загрузить</h3><p>'+esc(e.message||e)+'. Проверь ключ и попробуй ещё раз.</p></div>'; upd.textContent="ошибка"; });
+  }
+  document.getElementById("rf").addEventListener("click",load);
+  load();
+  setInterval(load,30000);
+})();
+</script>
+</body>
+</html>
