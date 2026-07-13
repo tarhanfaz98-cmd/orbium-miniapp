@@ -1,0 +1,246 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Orbium · карта системы</title></head><body>
+<style>
+  :root{
+    --bg:#08090f; --bg2:#0b0c16;
+    --panel:rgba(255,255,255,.038); --panel2:rgba(255,255,255,.065);
+    --hair:rgba(255,255,255,.085); --hair2:rgba(255,255,255,.14);
+    --txt:#eef0f7; --dim:#9ea4ba; --mut:#6b7188;
+    --accent:#8f78ff; --accent2:#5b8cff;
+    --violet:#8f78ff; --blue:#5b9dff; --amber:#ffbb54; --green:#3ce6a6; --pink:#ff6b9d;
+    --ok:#3ce6a6; --warn:#ffbb54; --bad:#ff6b7e;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,"Segoe UI",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:
+      radial-gradient(1100px 620px at 12% -8%,rgba(143,120,255,.16),transparent 55%),
+      radial-gradient(900px 560px at 108% 4%,rgba(91,140,255,.12),transparent 52%),
+      var(--bg);
+    color:var(--txt);font-family:var(--sans);line-height:1.55;
+    -webkit-font-smoothing:antialiased;padding:0 0 80px;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+  .hd{padding:52px 0 30px;border-bottom:1px solid var(--hair);margin-bottom:44px}
+  .kicker{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--mut);font-weight:600;display:flex;align-items:center;gap:11px;margin-bottom:20px}
+  .orb{width:26px;height:26px;border-radius:9px;background:conic-gradient(from 210deg,#7c5cff,#5b8cff,#7c5cff);box-shadow:0 4px 16px rgba(124,92,255,.45);position:relative}
+  .orb::after{content:"";position:absolute;inset:2px;border-radius:7px;background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.6),transparent 46%)}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:800;letter-spacing:-1.2px;line-height:1.05;text-wrap:balance}
+  h1 b{background:linear-gradient(115deg,#b6a6ff,#6fa8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--dim);font-size:17px;margin-top:16px;max-width:60ch}
+  section{margin:48px 0}
+  h2{font-size:13px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+  h2::after{content:"";flex:1;height:1px;background:var(--hair)}
+  .lead{color:var(--dim);font-size:15px;margin:-8px 0 22px;max-width:70ch}
+  /* bots */
+  .bots{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.bots{grid-template-columns:1fr}}
+  .bot{background:var(--panel);border:1px solid var(--hair);border-radius:18px;padding:20px 20px 18px;position:relative;overflow:hidden}
+  .bot::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--c)}
+  .bot .top{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);flex:0 0 auto}
+  .bot .nm{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--txt)}
+  .role{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--c);margin-bottom:11px}
+  .bot p{font-size:14px;color:var(--dim);margin-bottom:12px}
+  .who{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--panel2);border:1px solid var(--hair)}
+  .who.you{color:var(--amber)} .who.cli{color:var(--blue)} .who.auto{color:var(--mut)}
+  /* channels */
+  .chs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.chs{grid-template-columns:1fr}}
+  .ch{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:18px}
+  .ch .nm{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:4px}
+  .ch .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:3px 9px;border-radius:6px;margin-bottom:10px;display:inline-block}
+  .ch.pub .tag{background:rgba(91,157,255,.14);color:#7fb0ff}
+  .ch.prv .tag{background:rgba(255,187,84,.14);color:var(--amber)}
+  .ch p{font-size:13.5px;color:var(--dim)}
+  /* flows */
+  .flow{background:var(--panel);border:1px solid var(--hair);border-radius:18px;padding:22px;margin-bottom:14px}
+  .flow .ft{font-size:15px;font-weight:700;margin-bottom:4px;color:var(--txt)}
+  .flow .fd{font-size:13px;color:var(--mut);margin-bottom:18px}
+  .steps{display:flex;flex-wrap:wrap;align-items:stretch;gap:9px}
+  .step{flex:1;min-width:132px;background:var(--panel2);border:1px solid var(--hair);border-radius:13px;padding:12px 13px;position:relative}
+  .step .s-n{font-size:10px;font-weight:800;color:var(--accent);letter-spacing:.5px}
+  .step .s-t{font-size:13.5px;font-weight:600;margin:5px 0 3px;line-height:1.25}
+  .step .s-w{font-size:11.5px;color:var(--mut);font-family:var(--mono)}
+  .arrow{display:flex;align-items:center;color:var(--mut);font-size:18px;flex:0 0 auto}
+  @media(max-width:680px){.arrow{transform:rotate(90deg)}}
+  /* table */
+  .tblwrap{overflow-x:auto;border:1px solid var(--hair);border-radius:16px;background:var(--panel)}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:560px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);font-weight:700;padding:14px 16px;border-bottom:1px solid var(--hair)}
+  td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.045);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .wf{font-weight:600;color:var(--txt)}
+  .wf .id{display:block;font-family:var(--mono);font-size:11px;color:var(--mut);font-weight:400;margin-top:2px}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;white-space:nowrap}
+  .b-cli{background:rgba(91,157,255,.14);color:#7fb0ff}
+  .b-con{background:rgba(143,120,255,.16);color:#b6a6ff}
+  .b-sup{background:rgba(60,230,166,.14);color:var(--green)}
+  .b-inf{background:rgba(255,187,84,.14);color:var(--amber)}
+  /* cheat */
+  .cheat{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:680px){.cheat{grid-template-columns:1fr}}
+  .cc{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--hair);border-radius:15px;padding:17px}
+  .cc .q{font-size:14px;font-weight:700;margin-bottom:9px;color:var(--txt)}
+  .cc .a{font-size:13.5px;color:var(--dim)}
+  .cc .a code{font-family:var(--mono);font-size:12.5px;background:rgba(143,120,255,.14);color:#c3b6ff;padding:2px 7px;border-radius:6px}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--hair);color:var(--mut);font-size:12.5px;text-align:center}
+  a{color:#8fb4ff}
+  .note{background:rgba(60,230,166,.06);border:1px solid rgba(60,230,166,.18);border-radius:14px;padding:15px 17px;font-size:13.5px;color:var(--dim);margin-top:18px}
+  .note b{color:var(--green)}
+</style>
+
+<div class="wrap">
+  <header class="hd">
+    <div class="kicker"><span class="orb"></span>Orbium · карта системы</div>
+    <h1>Как устроена <b>твоя автоматика</b></h1>
+    <p class="sub">Все боты, каналы и процессы Orbium на одной странице. Кто за что отвечает, куда писать тебе, и как всё работает само.</p>
+  </header>
+
+  <section>
+    <h2>4 бота · кто за что</h2>
+    <p class="lead">Каждый бот — отдельная роль. Тебе для управления нужен только один — <b style="color:var(--amber)">@OrbiumDeputy_bot</b>. Остальные работают сами.</p>
+    <div class="bots">
+      <div class="bot" style="--c:var(--blue)">
+        <div class="top"><span class="dot"></span><span class="nm">@Orbium_77bot</span></div>
+        <div class="role">Клиентский бот</div>
+        <p>Лицо для клиентов. На /start шлёт welcome-видео, записывает в вейтлист, открывает мини-апп. Через него идёт оплата и автоматическая выдача ключа.</p>
+        <span class="who cli">→ сюда пишут КЛИЕНТЫ</span>
+      </div>
+      <div class="bot" style="--c:var(--amber)">
+        <div class="top"><span class="dot"></span><span class="nm">@OrbiumDeputy_bot</span></div>
+        <div class="role">Управляющий бот · твой пульт</div>
+        <p>Твой личный ассистент. Пишешь ему командой — ИИ понимает и делает: «сделай пост про скорость», отвечает на вопросы по делу.</p>
+        <span class="who you">★ сюда пишешь ТЫ</span>
+      </div>
+      <div class="bot" style="--c:var(--violet)">
+        <div class="top"><span class="dot"></span><span class="nm">@orbium_core_bot</span></div>
+        <div class="role">Бот-движок</div>
+        <p>Рабочая лошадка за кулисами: публикует посты в канал, обрабатывает кнопки одобрения, шлёт тебе алерты в Orbium_Admin. Напрямую с ним не общаешься.</p>
+        <span class="who auto">работает сам</span>
+      </div>
+      <div class="bot" style="--c:var(--green)">
+        <div class="top"><span class="dot"></span><span class="nm">@Orbium_supportbot</span></div>
+        <div class="role">Саппорт-бот</div>
+        <p>ИИ-поддержка. Клиенты пишут вопросы — отвечает сам (~90%). Критичное (деньги, поломка, жалоба) эскалирует тебе в Orbium_Admin.</p>
+        <span class="who cli">→ сюда пишут КЛИЕНТЫ</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 канала</h2>
+    <div class="chs">
+      <div class="ch pub">
+        <div class="nm">@Orbium_vpn</div>
+        <span class="tag">публичный</span>
+        <p>Витрина. Сюда выходят посты (промо + новости) после твоего одобрения. Клиенты подписываются, идут в бота.</p>
+      </div>
+      <div class="ch prv">
+        <div class="nm">Orbium_Admin</div>
+        <span class="tag">твой закрытый</span>
+        <p>Твой штаб. Сюда падают: черновики постов с кнопками <b style="color:var(--ok)">✅</b>/<b style="color:var(--amber)">✏️</b>/<b style="color:var(--bad)">❌</b>, эскалации саппорта, алерты мониторинга SNI.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Как это работает · 4 потока</h2>
+
+    <div class="flow">
+      <div class="ft">🟦 Клиент покупает VPN</div>
+      <div class="fd">Полностью автоматически — от /start до рабочего ключа, без тебя.</div>
+      <div class="steps">
+        <div class="step"><div class="s-n">01</div><div class="s-t">/start в боте</div><div class="s-w">@Orbium_77bot</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">02</div><div class="s-t">Мини-апп · Тарифы</div><div class="s-w">выбор плана</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">03</div><div class="s-t">Оплата</div><div class="s-w">Platega · СБП/крипта</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">04</div><div class="s-t">Ключ + инструкция</div><div class="s-w">авто-выдача</div></div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="ft">🟪 Контент выходит в канал</div>
+      <div class="fd">Агенты сами пишут посты по расписанию. Публикуется только после твоего ✅.</div>
+      <div class="steps">
+        <div class="step"><div class="s-n">01</div><div class="s-t">Агент пишет пост</div><div class="s-w">по расписанию</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">02</div><div class="s-t">+ визуал (орб)</div><div class="s-w">без текста на фото</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">03</div><div class="s-t">Черновик тебе</div><div class="s-w">Orbium_Admin · ✅✏️❌</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">04</div><div class="s-t">Публикация</div><div class="s-w">@Orbium_vpn</div></div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="ft">🟨 Ты заказываешь пост вручную</div>
+      <div class="fd">Когда нужен пост на конкретную тему — просто напиши управляющему боту.</div>
+      <div class="steps">
+        <div class="step"><div class="s-n">01</div><div class="s-t">«сделай пост про…»</div><div class="s-w">@OrbiumDeputy_bot</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">02</div><div class="s-t">ИИ пишет + визуал</div><div class="s-w">за секунды</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">03</div><div class="s-t">Черновик тебе</div><div class="s-w">Orbium_Admin</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">04</div><div class="s-t">Жмёшь ✅</div><div class="s-w">→ в канал</div></div>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="ft">🟩 Клиенту нужна помощь</div>
+      <div class="fd">ИИ-саппорт закрывает большинство сам, тебя зовёт только на важное.</div>
+      <div class="steps">
+        <div class="step"><div class="s-n">01</div><div class="s-t">Клиент пишет</div><div class="s-w">@Orbium_supportbot</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">02</div><div class="s-t">ИИ отвечает сам</div><div class="s-w">~90% вопросов</div></div>
+        <div class="arrow">→</div>
+        <div class="step"><div class="s-n">03</div><div class="s-t">Критичное → тебе</div><div class="s-w">Orbium_Admin · алерт</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Все процессы в n8n</h2>
+    <p class="lead">15 рабочих воркфлоу. Ты в них не лазаешь — они крутятся сами. Это для понимания «что под капотом».</p>
+    <div class="tblwrap">
+      <table>
+        <thead><tr><th>Процесс</th><th>Группа</th><th>Что делает</th></tr></thead>
+        <tbody>
+          <tr><td class="wf">Orbium Waitlist</td><td><span class="badge b-cli">Клиент</span></td><td>/start → welcome-видео + запись в вейтлист + мини-апп</td></tr>
+          <tr><td class="wf">Orbium Payment Create</td><td><span class="badge b-cli">Клиент</span></td><td>Кнопка «Оплатить» → создаёт платёж Platega (СБП/крипта), считает бонусы</td></tr>
+          <tr><td class="wf">Orbium Payment Callback</td><td><span class="badge b-cli">Клиент</span></td><td>Платёж подтверждён → создаёт ключ на сервере → шлёт клиенту + начисляет реф-бонус</td></tr>
+          <tr><td class="wf">Orbium Sub Status</td><td><span class="badge b-cli">Клиент</span></td><td>Мини-апп спрашивает: сколько дней, какой ключ, какие серверы</td></tr>
+          <tr><td class="wf">Orbium Bonus Status</td><td><span class="badge b-cli">Клиент</span></td><td>Мини-апп: баланс бонусов клиента</td></tr>
+          <tr><td class="wf">Orbium Promo Status</td><td><span class="badge b-cli">Клиент</span></td><td>Мини-апп: таймер до запуска / акция</td></tr>
+          <tr><td class="wf">Orbium Promo Agent</td><td><span class="badge b-con">Контент</span></td><td>По расписанию пишет промо-пост → черновик на одобрение</td></tr>
+          <tr><td class="wf">tg channel (News)</td><td><span class="badge b-con">Контент</span></td><td>Раз в неделю: берёт новости (RSS) → пишет пост → черновик</td></tr>
+          <tr><td class="wf">Orbium Approval</td><td><span class="badge b-con">Контент</span></td><td>Обрабатывает кнопки ✅/✏️/❌ и правки → публикует в канал</td></tr>
+          <tr><td class="wf">Orbium Deputy Inbox</td><td><span class="badge b-con">Контент</span></td><td>Приём твоих команд управляющему боту (Claude-роутер)</td></tr>
+          <tr><td class="wf">Orbium Deputy Agent</td><td><span class="badge b-con">Контент</span></td><td>Разбирает поручения, ставит задачи промо-агенту</td></tr>
+          <tr><td class="wf">Orbium Promo Recovery</td><td><span class="badge b-con">Контент</span></td><td>Страховка: чинит зависшие задачи постинга</td></tr>
+          <tr><td class="wf">Orbium Support</td><td><span class="badge b-sup">Саппорт</span></td><td>ИИ-ответы клиентам + эскалация критичного тебе</td></tr>
+          <tr><td class="wf">Orbium Admin Stats</td><td><span class="badge b-inf">Инфра</span></td><td>Отдаёт данные для твоей живой админ-панели</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Шпаргалка · как управлять</h2>
+    <div class="cheat">
+      <div class="cc"><div class="q">Сделать пост на тему</div><div class="a">Напиши <code>@OrbiumDeputy_bot</code> → «сделай пост про …». Черновик придёт в Orbium_Admin.</div></div>
+      <div class="cc"><div class="q">Опубликовать / отклонить пост</div><div class="a">Кнопки в <code>Orbium_Admin</code>: ✅ Опубликовать · ✏️ Переделать · ❌ Скип.</div></div>
+      <div class="cc"><div class="q">Переделать пост с правками</div><div class="a">Свайпни черновик → Reply → напиши, что не так. Агент переделает.</div></div>
+      <div class="cc"><div class="q">Посмотреть статистику</div><div class="a">Открой <a href="https://tarhanfaz98-cmd.github.io/orbium-miniapp/admin.html?key=orb_a7f3k9m2">живую панель</a>: онлайн, клиенты, трафик, серверы.</div></div>
+      <div class="cc"><div class="q">Ответить клиенту</div><div class="a">Саппорт-ИИ отвечает сам. Если пришла эскалация в Orbium_Admin — вопрос важный, глянь.</div></div>
+      <div class="cc"><div class="q">Следить за конкурентом</div><div class="a">Мониторинг BlackTemple крутится сам. Сменят маскировку — придёт алерт в Orbium_Admin.</div></div>
+    </div>
+    <div class="note"><b>Главное:</b> система продаёт и постит сама. Твоя роль — жать ✅ на черновики в Orbium_Admin и иногда заказывать посты у @OrbiumDeputy_bot. Всё остальное автоматика.</div>
+  </section>
+
+  <div class="foot">Orbium · карта системы · обновлено 13 июля 2026</div>
+</div>
+</body></html>
