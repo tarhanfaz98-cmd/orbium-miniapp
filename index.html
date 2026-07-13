@@ -528,7 +528,6 @@
         <section class="view" id="v-tariffs">
           <div class="vtitle">Тарифы</div>
           <div class="vsub">Безлимит, до 2 устройств.</div>
-          <div class="promobar" id="promoBar" hidden><span>🔥 Скидка <b>−25%</b> первым 50 клиентам</span><b>осталось <span class="pl" id="promoLeft">—</span></b></div>
 
           <div class="plan" data-price="350">
             <span class="radio"></span>
@@ -736,7 +735,7 @@
   function selectedPrice(){const p=document.querySelector('.plan.sel');return p?+p.dataset.price:0;}
   function updatePay(){
     const price0=selectedPrice();
-    const price=(window.PROMO&&window.PROMO.active)?Math.round(price0*0.75):price0;
+    const price=price0;
     const ub=document.getElementById('useBonus');
     const applied=(ub&&ub.checked)?Math.min(bonus,Math.floor(price*0.5)):0;
     const ba=document.getElementById('bonusApply');if(ba)ba.textContent=applied.toLocaleString('ru-RU');
@@ -994,7 +993,7 @@
     var tg=window.Telegram&&window.Telegram.WebApp;
     var uid='';try{uid=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id||'');}catch(e){}
     var ru=document.getElementById('refurl');
-    if(ru&&uid)ru.textContent='t.me/Orbium_77bot?startapp='+uid;
+    if(ru&&uid)ru.textContent='t.me/Orbium_77bot?start='+uid;
     var uname='';try{uname=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.username)||'';}catch(e){}
     var _un=document.getElementById('uchipName');if(_un)_un.textContent=uname?('@'+uname):(uid?('id'+uid.slice(-6)):'Orbium');
     try{
@@ -1006,14 +1005,6 @@
           .catch(function(){});
       }
     }catch(e){}
-  })();
-  // промо «первым 50 — 25%»
-  (function(){
-    fetch('https://tarhanfaz98.app.n8n.cloud/webhook/orbium-promo').then(function(r){return r.json();}).then(function(d){
-      window.PROMO=d;
-      if(d&&d.active){var b=document.getElementById('promoBar');if(b)b.hidden=false;var l=document.getElementById('promoLeft');if(l)l.textContent=d.left;}
-      if(typeof updatePay==='function')updatePay();
-    }).catch(function(){});
   })();
   applyLang(lang);  // apply saved language on load
 </script>
