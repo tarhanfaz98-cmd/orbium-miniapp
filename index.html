@@ -149,6 +149,30 @@
   .btn svg{width:18px;height:18px;}.btn:active{background:rgba(255,255,255,.12);}
   .btn.primary{background:linear-gradient(180deg,var(--accent),#3f74ee);border-color:transparent;color:#fff;box-shadow:0 12px 28px rgba(91,140,255,.4);}
 
+  /* ── шторка оплаты ─────────────────────────────────────────────
+     Telegram молча игнорирует openLink, если он вызван не в момент касания,
+     а после ответа сервера. Поэтому ссылку на оплату ВСЕГДА показываем
+     явной кнопкой: тап по ней — прямой жест пользователя, его не режут. */
+  .paywrap{position:absolute;inset:0;z-index:120;display:none;}
+  .paywrap.on{display:block;}
+  .payscrim{position:absolute;inset:0;background:rgba(3,4,10,.66);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:pfade .2s ease-out both;}
+  .paysheet{position:absolute;left:0;right:0;bottom:0;padding:22px 18px calc(22px + env(safe-area-inset-bottom));
+    background:#0d1020;border-top:1px solid var(--hair-2);border-radius:22px 22px 0 0;
+    box-shadow:0 -18px 50px rgba(0,0,0,.55);animation:prise .26s cubic-bezier(.22,1,.36,1) both;}
+  @keyframes pfade{from{opacity:0}to{opacity:1}}
+  @keyframes prise{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @media (prefers-reduced-motion:reduce){.payscrim,.paysheet{animation:none;}}
+  .paysheet h4{font-size:17px;font-weight:800;letter-spacing:-.2px;margin-bottom:6px;color:var(--txt);}
+  .paysheet .psub{font-size:13.5px;line-height:1.5;color:var(--mut);margin-bottom:16px;}
+  .paysheet .pamount{font-size:26px;font-weight:800;letter-spacing:-.6px;color:var(--txt);margin-bottom:14px;}
+  .paysheet a.btn{text-decoration:none;}
+  .paysheet .pclose{margin-top:10px;background:transparent;border-color:transparent;color:var(--mut);font-weight:600;height:44px;}
+  .payerr{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;margin-bottom:14px;
+    background:rgba(255,93,93,.12);border:1px solid rgba(255,93,93,.34);}
+  .payerr[hidden]{display:none;}   /* без этого display:flex перебивает атрибут hidden */
+  .payerr svg{width:18px;height:18px;color:#ff7a7a;flex:none;margin-top:1px;}
+  .payerr span{font-size:13.5px;line-height:1.5;color:#ffc9c9;}
+
   /* plans */
   .plan{display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:18px;border:1px solid var(--hair);background:var(--glass);
     margin-bottom:11px;cursor:pointer;position:relative;transition:border-color .15s,background .15s;box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
@@ -644,6 +668,25 @@
       <button data-view="v-ref"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Пригласить</button>
       <button data-view="v-more"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>Ещё</button>
     </nav>
+
+    <!-- шторка оплаты: показывается после того, как ссылка на оплату получена -->
+    <div class="paywrap" id="paySheet" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+      <div class="payscrim" id="payScrim"></div>
+      <div class="paysheet">
+        <div class="payerr" id="payErr" hidden role="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16.5v.01"/></svg>
+          <span id="payErrText"></span>
+        </div>
+        <h4 id="payTitle">Всё готово к оплате</h4>
+        <div class="psub" id="payHint">Нажми кнопку — откроется страница оплаты. Там выбери способ: СБП или криптовалюта.</div>
+        <div class="pamount" id="payAmount"></div>
+        <a class="btn primary" id="payGo" href="#" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+          Перейти к оплате
+        </a>
+        <button class="btn pclose" id="payClose" type="button">Закрыть</button>
+      </div>
+    </div>
   </div>
 
 <script>
@@ -748,18 +791,43 @@
     document.getElementById('payPrice').textContent=fmt(price-applied);
   }
   document.querySelectorAll('.plan').forEach(p=>p.addEventListener('click',()=>{
-    var already=p.classList.contains('sel');
     document.querySelectorAll('.plan').forEach(x=>x.classList.remove('sel'));
     p.classList.add('sel');
     updatePay();
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
-    if(already) startPay();   // повторный тап по выбранному тарифу → сразу оплата
+    // Раньше повторный тап по выбранному тарифу сразу создавал платёж.
+    // Человек тыкал в карточку, чтобы её выбрать, и получал лишние заказы —
+    // отсюда серии по 4 попытки за 8 секунд. Оплата теперь только по кнопке.
   }));
 
   // ── оплата: тариф → n8n создаёт платёж → открывается окно Platega (метод выбирается там) ──
   const PAY_CREATE_URL='https://tarhanfaz98.app.n8n.cloud/webhook/orbium-pay-create';
   const PLAN_CODE={350:'1m',900:'3m',1590:'6m',2690:'12m'};
+  // ── шторка оплаты ──
+  var paySheetEl=document.getElementById('paySheet');
+  function payShow(){if(paySheetEl)paySheetEl.classList.add('on');}
+  function payHide(){if(paySheetEl)paySheetEl.classList.remove('on');}
+  function payError(msg){
+    var e=document.getElementById('payErr'),t=document.getElementById('payErrText');
+    if(t)t.textContent=msg;
+    if(e)e.hidden=false;
+    var go=document.getElementById('payGo');
+    if(go){go.textContent=L('Попробовать ещё раз','Try again');go.removeAttribute('href');go.onclick=function(ev){ev.preventDefault();payHide();startPay();};}
+    var ttl=document.getElementById('payTitle'),hint=document.getElementById('payHint'),amt=document.getElementById('payAmount');
+    if(ttl)ttl.textContent=L('Оплата не создалась','Payment not created');
+    if(hint)hint.textContent=L('Деньги не списаны. Если повторится — напиши в поддержку, разберёмся.','No money was charged. If it repeats, contact support.');
+    if(amt)amt.textContent='';
+    payShow();
+  }
+  (function(){
+    var c=document.getElementById('payClose'),s=document.getElementById('payScrim');
+    if(c)c.addEventListener('click',payHide);
+    if(s)s.addEventListener('click',payHide);
+  })();
+
+  var payInFlight=false;
   function startPay(){
+    if(payInFlight) return;               // защита от повторных тапов, пока идёт запрос
     var payBtn=document.getElementById('payBtn');
     var tg=window.Telegram&&window.Telegram.WebApp;
     var uid='';try{uid=String(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.id||'');}catch(e){}
@@ -769,17 +837,35 @@
     if(!plan){notify(L('Выбери тариф.','Select a plan.'));return;}
     try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
     var payLabel=payBtn?payBtn.innerHTML:'';
-    if(payBtn){payBtn.disabled=true;payBtn.textContent=L('Открываем оплату…','Opening payment…');}
+    payInFlight=true;
+    if(payBtn){payBtn.disabled=true;payBtn.textContent=L('Готовим оплату…','Preparing payment…');}
     var initData=(tg&&tg.initData)||'';var _ub=document.getElementById('useBonus');var useBonus=!!(_ub&&_ub.checked);
+    var shownPrice=(document.getElementById('payPrice')||{}).textContent||'';
     fetch(PAY_CREATE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tgId:uid,plan:plan,referrer:ref,initData:initData,useBonus:useBonus})})
       .then(function(r){return r.json();})
       .then(function(d){
+        payInFlight=false;
         if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}
-        if(d&&d.url){try{window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');}catch(e){}
-          if(tg&&tg.openLink)tg.openLink(d.url);else window.open(d.url,'_blank');}
-        else notify(L('Не удалось создать оплату. Попробуй ещё раз.','Could not create payment. Try again.'));
+        if(d&&d.url){
+          try{window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred('success');}catch(e){}
+          // Кнопку со ссылкой показываем ВСЕГДА: тап по ней — прямой жест пользователя,
+          // и он срабатывает даже там, где Telegram глушит автоматический openLink.
+          var go=document.getElementById('payGo');
+          if(go){go.onclick=null;go.setAttribute('href',d.url);go.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>'+L('Перейти к оплате','Go to payment');}
+          var err=document.getElementById('payErr');if(err)err.hidden=true;
+          var ttl=document.getElementById('payTitle');if(ttl)ttl.textContent=L('Всё готово к оплате','Ready to pay');
+          var hint=document.getElementById('payHint');if(hint)hint.textContent=L('Нажми кнопку — откроется страница оплаты. Там выбери способ: СБП или криптовалюта.','Tap the button to open the payment page and choose a method.');
+          var amt=document.getElementById('payAmount');if(amt)amt.textContent=shownPrice;
+          payShow();
+          try{if(tg&&tg.openLink)tg.openLink(d.url);}catch(e){}
+        }
+        else payError(L('Сервер не вернул ссылку на оплату.','Server did not return a payment link.'));
       })
-      .catch(function(){if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}notify(L('Ошибка сети. Попробуй ещё раз.','Network error. Try again.'));});
+      .catch(function(){
+        payInFlight=false;
+        if(payBtn){payBtn.disabled=false;payBtn.innerHTML=payLabel;}
+        payError(L('Не получилось связаться с сервером. Проверь интернет.','Could not reach the server. Check your connection.'));
+      });
   }
   (function(){var payBtn=document.getElementById('payBtn');if(payBtn)payBtn.addEventListener('click',startPay);})();
 
