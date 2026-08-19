@@ -170,6 +170,22 @@
   .payerr{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;margin-bottom:14px;
     background:rgba(255,93,93,.12);border:1px solid rgba(255,93,93,.34);}
   .payerr[hidden]{display:none;}   /* без этого display:flex перебивает атрибут hidden */
+
+  /* ── вывод бонусов на карту ── */
+  .holdnote{margin:-4px 0 14px;font-size:12.5px;line-height:1.5;color:var(--mut);}
+  .holdnote[hidden]{display:none;}
+  .wdhint{margin:8px 0 16px;font-size:12.5px;line-height:1.5;color:var(--mut);text-align:center;}
+  .wdform{margin:0 0 18px;}
+  .wdform[hidden]{display:none;}
+  .fl{display:block;font-size:12.5px;font-weight:600;color:var(--mut);margin:12px 0 6px;}
+  .fi{width:100%;height:48px;border-radius:14px;border:1px solid var(--hair-2);background:var(--glass);
+    color:var(--txt);font-family:inherit;font-size:16px;padding:0 14px;outline:none;}
+  .fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,140,255,.22);}
+  .fe{margin:12px 0 0;padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.5;
+    background:rgba(255,93,93,.12);border:1px solid rgba(255,93,93,.34);color:#ffc9c9;}
+  .fe[hidden]{display:none;}
+  #wdSend{margin-top:16px;}
+  #wdOpen:disabled{opacity:.45;}
   .payerr svg{width:18px;height:18px;color:#ff7a7a;flex:none;margin-top:1px;}
   .payerr span{font-size:13.5px;line-height:1.5;color:#ffc9c9;}
 
@@ -604,16 +620,40 @@
           <div class="vsub">Приглашай друзей — получай бонусы и оплачивай ими VPN.</div>
 
           <div class="refhero">
-            <div class="big">10%</div>
-            <div class="cap">бонусами с каждой оплаты приглашённого друга — навсегда</div>
+            <div class="big">25%</div>
+            <div class="cap">с каждой оплаты приглашённого друга — навсегда</div>
           </div>
 
           <div class="bonuscard">
             <div class="bc-l">
-              <div class="bc-k">Твои бонусы</div>
+              <div class="bc-k">Доступно сейчас</div>
               <div class="bc-v"><span id="bonusBal">0</span> ₽</div>
             </div>
             <button class="bc-btn" id="spendBonus">Оплатить бонусами</button>
+          </div>
+
+          <div class="rstats">
+            <div class="rstat"><div class="k">В холде</div><div class="v"><span id="bonusHold">0</span> ₽</div></div>
+            <div class="rstat"><div class="k">Всего заработано</div><div class="v"><span id="refEarned2">0</span> ₽</div></div>
+          </div>
+          <div class="holdnote" id="holdNote" hidden></div>
+
+          <button class="btn" id="wdOpen">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            <span id="wdOpenLabel">Вывести на карту</span>
+          </button>
+          <div class="wdhint" id="wdHint">Вывод доступен от 3000 ₽</div>
+
+          <div class="wdform" id="wdForm" hidden>
+            <label class="fl" for="wdFio">ФИО получателя</label>
+            <input class="fi" id="wdFio" type="text" autocomplete="name" placeholder="Иванов Иван Иванович">
+            <label class="fl" for="wdCard">Номер карты</label>
+            <input class="fi" id="wdCard" type="text" inputmode="numeric" autocomplete="cc-number" placeholder="2200 0000 0000 0000">
+            <label class="fl" for="wdSum">Сумма, ₽</label>
+            <input class="fi" id="wdSum" type="text" inputmode="numeric" placeholder="3000">
+            <div class="fe" id="wdErr" hidden role="alert"></div>
+            <button class="btn primary" id="wdSend">Отправить заявку</button>
+            <div class="wdhint">Деньги придут на карту после проверки — обычно в течение суток.</div>
           </div>
 
           <div class="reflink">
@@ -630,8 +670,9 @@
             <h4>Как это работает</h4>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Делишься своей ссылкой с другом</div>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Друг оплачивает любой тариф</div>
-            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>Ты заработал 10% с его оплаты — бонусами</div>
-            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Оплачивай бонусами свою подписку</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>Тебе начисляется 25% с его оплаты</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>Через 14 дней бонусы становятся доступны</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Плати ими за подписку или выводи на карту от 3000 ₽</div>
           </div>
 
           <button class="btn primary" id="inviteBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Пригласить друга</button>
@@ -742,6 +783,9 @@
   let bonus=0;          // доступные бонусы, ₽
   let refInvited=0;     // приглашено друзей
   let refEarnedTotal=0; // всего начислено бонусов, ₽
+  let bonusHold=0;      // начислено, но ещё в холде 14 дней
+  let minWithdraw=3000; // порог вывода на карту
+  let holdUntilRu='';   // когда разблокируется ближайшее начисление
 
   // ── i18n (RU/EN) — переключение всего интерфейса ──
   let lang=(function(){try{return localStorage.getItem('orbium_lang')||'ru';}catch(e){return 'ru';}})();
@@ -883,6 +927,66 @@
     var nb=document.querySelector('.nav button[data-view="v-ref"]');if(nb)nb.click();
   });
 
+  // ── вывод бонусов на карту ──
+  const PAYOUT_URL='https://tarhanfaz98.app.n8n.cloud/webhook/orbium-payout-request';
+  (function(){
+    var open=document.getElementById('wdOpen'), form=document.getElementById('wdForm'),
+        fio=document.getElementById('wdFio'), card=document.getElementById('wdCard'),
+        sum=document.getElementById('wdSum'), err=document.getElementById('wdErr'),
+        send=document.getElementById('wdSend');
+    if(!open||!form) return;
+
+    function showErr(m){ if(!err)return; err.textContent=m; err.hidden=!m; }
+
+    open.addEventListener('click',function(){
+      form.hidden=!form.hidden;
+      if(!form.hidden){
+        if(sum&&!sum.value) sum.value=String(bonus);
+        showErr('');
+        try{window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light');}catch(e){}
+        form.scrollIntoView({behavior:'smooth',block:'nearest'});
+      }
+    });
+
+    // номер карты — группами по 4, так его читают глазами и меньше ошибаются
+    if(card) card.addEventListener('input',function(){
+      var d=card.value.replace(/\D/g,'').slice(0,19);
+      card.value=d.replace(/(.{4})/g,'$1 ').trim();
+    });
+    if(sum) sum.addEventListener('input',function(){ sum.value=sum.value.replace(/\D/g,'').slice(0,7); });
+
+    send&&send.addEventListener('click',function(){
+      var tg=window.Telegram&&window.Telegram.WebApp;
+      var initData=(tg&&tg.initData)||'';
+      var f=(fio&&fio.value||'').trim();
+      var c=(card&&card.value||'').replace(/\D/g,'');
+      var a=parseInt((sum&&sum.value||'0'),10)||0;
+
+      if(f.split(/\s+/).filter(Boolean).length<2) return showErr('Укажи фамилию, имя и отчество — банк сверяет их с картой.');
+      if(!/^\d{16,19}$/.test(c)) return showErr('Номер карты — 16 цифр, без пробелов и дефисов.');
+      if(a<minWithdraw) return showErr('Минимальная сумма вывода — '+minWithdraw.toLocaleString('ru-RU')+' ₽.');
+      if(a>bonus) return showErr('На балансе доступно '+bonus.toLocaleString('ru-RU')+' ₽.');
+      showErr('');
+
+      var label=send.innerHTML;
+      send.disabled=true; send.textContent='Отправляем…';
+      fetch(PAYOUT_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({initData:initData,amount:a,fio:f,card:c})})
+        .then(function(r){return r.json();})
+        .then(function(d){
+          send.disabled=false; send.innerHTML=label;
+          if(d&&d.ok){
+            try{tg?.HapticFeedback?.notificationOccurred('success');}catch(e){}
+            form.hidden=true;
+            bonus=Math.max(0,bonus-a);
+            renderBonus();
+            notify('Заявка на '+a.toLocaleString('ru-RU')+' ₽ отправлена. Деньги придут на карту после проверки — обычно в течение суток.');
+          } else showErr((d&&d.error)||'Не получилось отправить заявку. Попробуй ещё раз.');
+        })
+        .catch(function(){ send.disabled=false; send.innerHTML=label; showErr('Нет связи с сервером. Проверь интернет.'); });
+    });
+  })();
+
   // ── referral / bonus wiring ──
   function refLink(){return 'https://'+document.getElementById('refurl').textContent.trim();}
   function renderBonus(){
@@ -892,6 +996,28 @@
     document.querySelector('.bonuscard').classList.toggle('empty',bonus<=0);
     const row=document.getElementById('bonusRow');if(row)row.hidden=bonus<=0;
     const ub=document.getElementById('useBonus');if(ub&&bonus<=0)ub.checked=false;
+
+    // три числа: доступно / в холде / всего заработано
+    var eh=document.getElementById('bonusHold');if(eh)eh.textContent=bonusHold.toLocaleString('ru-RU');
+    var e2=document.getElementById('refEarned2');if(e2)e2.textContent=refEarnedTotal.toLocaleString('ru-RU');
+    var hn=document.getElementById('holdNote');
+    if(hn){
+      if(bonusHold>0){
+        hn.hidden=false;
+        hn.textContent=holdUntilRu
+          ? 'Ближайшие бонусы разблокируются '+holdUntilRu+'. Холд 14 дней защищает от возвратов.'
+          : 'Бонусы становятся доступны через 14 дней после начисления.';
+      } else hn.hidden=true;
+    }
+
+    // вывод на карту
+    var wo=document.getElementById('wdOpen'), wh=document.getElementById('wdHint');
+    if(wo){
+      wo.disabled = bonus < minWithdraw;
+      if(wh) wh.textContent = bonus>=minWithdraw
+        ? 'Заявка уходит на проверку, деньги приходят на карту обычно в течение суток.'
+        : 'Вывод доступен от '+minWithdraw.toLocaleString('ru-RU')+' ₽ — не хватает '+Math.max(0,minWithdraw-bonus).toLocaleString('ru-RU')+' ₽.';
+    }
     updatePay();
   }
   // share ref link via Telegram
@@ -1093,7 +1219,11 @@
       if(initData){
         fetch('https://tarhanfaz98.app.n8n.cloud/webhook/orbium-bonus-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData})})
           .then(function(r){return r.json();})
-          .then(function(d){if(d){bonus=Number(d.balance||0);refEarnedTotal=Number(d.earned||0);refInvited=Number(d.invited||0);if(typeof renderBonus==='function')renderBonus();}})
+          .then(function(d){if(d){bonus=Number(d.balance||0);refEarnedTotal=Number(d.earned||0);refInvited=Number(d.invited||0);
+            bonusHold=Number(d.hold||0);
+            if(d.minWithdraw)minWithdraw=Number(d.minWithdraw);
+            holdUntilRu=String(d.holdUntilRu||'');
+            if(typeof renderBonus==='function')renderBonus();}})
           .catch(function(){});
       }
     }catch(e){}
