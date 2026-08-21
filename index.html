@@ -386,6 +386,7 @@
   .hcountry.busy .hst{background:var(--amber);box-shadow:0 0 8px var(--amber);}
   .hcountry.offline .hst{background:#ff6b6b;box-shadow:0 0 8px #ff6b6b;}
   .hcountry.rec{border-color:rgba(91,140,255,.36);box-shadow:0 0 0 1px rgba(91,140,255,.18) inset;}
+  .hgrid .hnote{grid-column:1 / -1;font-size:12px;line-height:1.5;color:var(--mut);padding:2px 2px 0;}
   .hbody{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s var(--ease),opacity .3s,padding .4s var(--ease);padding-top:0;}
   .hwrap.open .hbody{max-height:1600px;opacity:1;padding-top:6px;}
   .hwrap.open.ov .hbody{overflow:visible;}
@@ -483,7 +484,7 @@
             <button class="btn primary" id="choosePlan" style="margin-top:16px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Выбрать тариф</button>
             <button class="refteaser" id="refTeaser">
               <span class="gic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></span>
-              <span class="tt"><span class="h">Пригласи друга</span><span class="s">10% с каждой его оплаты — бонусами навсегда</span></span>
+              <span class="tt"><span class="h">Пригласи друга</span><span class="s">25% с каждой его оплаты — бонусами навсегда</span></span>
               <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
           </div>
@@ -508,8 +509,8 @@
           <div class="hwrap">
             <button class="htoggle">
               <span class="hic globe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg></span>
-              <span class="htt"><span class="hh">Доступные страны</span><span class="hs">8 серверов в 4 странах · активны сейчас</span></span>
-              <span class="hflags">🇩🇪🇫🇷🇬🇧🇳🇱</span>
+              <span class="htt"><span class="hh">Доступные страны</span><span class="hs">Серверы активны · обновляются автоматически</span></span>
+              <span class="hflags">🇩🇪🇫🇷🇳🇱🇫🇮🇦🇹</span>
               <span class="hchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
             </button>
             <div class="hgrid" id="serverGrid"></div>
@@ -602,7 +603,7 @@
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Скорость до 1 Гбит/с</div>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Без лимита трафика</div>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Серверы по всему миру</div>
-            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Шифрование VLESS + Reality</div>
+            <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Шифрование нового поколения</div>
             <div class="it"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>До 2 устройств одновременно</div>
           </div>
 
@@ -790,7 +791,7 @@
   // ── i18n (RU/EN) — переключение всего интерфейса ──
   let lang=(function(){try{return localStorage.getItem('orbium_lang')||'ru';}catch(e){return 'ru';}})();
   function L(ru,en){return lang==='en'?en:ru;}
-  const DICT={"Установка": "Setup", "Установи": "Install", "Скачай": "Download", "для своей платформы (": "for your platform (", ") и установи. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разреши добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавь ключ доступа": "Add your access key", "«Ключ доступа» — это твоя личная ссылка-подписка. Нажми кнопку ниже:": "Your “access key” is your personal subscription bundle. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируй ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, до 2 устройств.": "Unlimited, up to 2 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "300 ₽ / месяц": "300 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Серверы по всему миру": "Servers worldwide", "Шифрование VLESS + Reality": "VLESS + Reality encryption", "До 2 устройств одновременно": "Up to 2 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Твои бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "Ты заработал 10% с его оплаты — бонусами": "You earn 10% of their payment as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language", "Главная": "Home", "Ваш ключ доступа": "Your access key", "Добавить в Happ": "Add to Happ", "Подключение": "Connection", "Доступные страны": "Available countries", "8 серверов в 4 странах · активны сейчас": "8 servers in 4 countries · active now", "Как установить": "How to install", "Happ · Streisand · INCY · пошагово": "Happ · Streisand · INCY · step by step", "iPhone из России: выбирай INCY — он есть в российском App Store. Для Happ и Streisand нужна смена региона App Store (Казахстан/ОАЭ).": "iPhone in Russia: pick INCY — it’s in the Russian App Store. Happ and Streisand require an App Store region change (Kazakhstan/UAE).", "Платформа": "Platform", "Нидерланды": "Netherlands", "Франция": "France", "Британия": "Britain", "4 страны": "4 countries", "основной сервер · active": "primary server · active", "1 сервер · active": "1 server · active", "Лучший сейчас": "Best now", "online": "online", "offline": "offline", "рекомендован": "recommended", "мс": "ms", "Выбрать тариф": "Choose a plan", "Пригласи друга": "Invite a friend", "10% с каждой его оплаты — бонусами навсегда": "10% of every payment they make — yours forever"};
+  const DICT={"Установка": "Setup", "Установи": "Install", "Скачай": "Download", "для своей платформы (": "for your platform (", ") и установи. Кнопка ниже открывает официальную страницу загрузки.": ") and install it. The button below opens the official download page.", "При первом запуске разреши добавление VPN-конфигурации — это нужно для подключения.": "On first launch, allow adding the VPN configuration — it’s required to connect.", "Скачать": "Get", "Добавь ключ доступа": "Add your access key", "«Ключ доступа» — это твоя личная ссылка-подписка. Нажми кнопку ниже:": "Your “access key” is your personal subscription bundle. Tap the button below:", "откроется и ключ добавится сам.": "will open and the key will be added automatically.", "Не сработало?": "Didn’t work?", "Скопируй ключ": "Copy the key", "и в приложении: «+» → «Вставить из буфера».": "and in the app: “+” → “Paste from clipboard”.", "Добавить ключ": "Add key", "Тарифы": "Plans", "Безлимит, до 2 устройств.": "Unlimited, up to 2 devices.", "1 месяц": "1 month", "350 ₽ / месяц": "350 ₽ / month", "3 месяца": "3 months", "300 ₽ / месяц": "300 ₽ / month", "популярный": "popular", "6 месяцев": "6 months", "265 ₽ / месяц": "265 ₽ / month", "1 год": "1 year", "224 ₽ / месяц": "224 ₽ / month", "Что входит": "What’s included", "Скорость до 1 Гбит/с": "Speed up to 1 Gbit/s", "Без лимита трафика": "No traffic limits", "Серверы по всему миру": "Servers worldwide", "Шифрование нового поколения": "Next-gen encryption", "До 2 устройств одновременно": "Up to 2 devices at once", "Списать бонусы": "Use bonuses", "Оформить за": "Checkout for", "Пригласить друзей": "Invite friends", "Приглашай друзей — получай бонусы и оплачивай ими VPN.": "Invite friends — earn bonuses and pay for your VPN with them.", "бонусами с каждой оплаты приглашённого друга — навсегда": "in bonuses from every payment of an invited friend — forever", "Твои бонусы": "Your bonuses", "Оплатить бонусами": "Pay with bonuses", "Приглашено": "Invited", "Всего начислено": "Total earned", "Как это работает": "How it works", "Делишься своей ссылкой с другом": "Share your link with a friend", "Друг оплачивает любой тариф": "Your friend buys any plan", "Тебе начисляется 25% с его оплаты": "You earn 25% of their payment as bonuses", "Оплачивай бонусами свою подписку": "Pay for your subscription with bonuses", "Пригласить друга": "Invite a friend", "Ещё": "More", "Помощь, документы и настройки.": "Help, documents and settings.", "Поддержка": "Support", "Инструкция": "How to install", "О сервисе": "About", "Политика конфиденциальности": "Privacy Policy", "Пользовательское соглашение": "Terms of Service", "Язык · Русский": "Language · English", "Пригласить": "Invite", "Язык": "Language", "Главная": "Home", "Ваш ключ доступа": "Your access key", "Добавить в Happ": "Add to Happ", "Подключение": "Connection", "Доступные страны": "Available countries", "Серверы активны · обновляются автоматически": "Servers active · updated automatically", "Как установить": "How to install", "Happ · Streisand · INCY · пошагово": "Happ · Streisand · INCY · step by step", "iPhone из России: выбирай INCY — он есть в российском App Store. Для Happ и Streisand нужна смена региона App Store (Казахстан/ОАЭ).": "iPhone in Russia: pick INCY — it’s in the Russian App Store. Happ and Streisand require an App Store region change (Kazakhstan/UAE).", "Платформа": "Platform", "Нидерланды": "Netherlands", "Франция": "France", "Британия": "Britain", "4 страны": "4 countries", "основной сервер · active": "primary server · active", "1 сервер · active": "1 server · active", "Лучший сейчас": "Best now", "online": "online", "offline": "offline", "рекомендован": "recommended", "мс": "ms", "Выбрать тариф": "Choose a plan", "Пригласи друга": "Invite a friend", "25% с каждой его оплаты — бонусами навсегда": "25% of every payment they make — yours forever"};
   const _orig=new WeakMap();
   function _tnodes(root){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null),a=[],n;while(n=w.nextNode()){if(n.nodeValue&&n.nodeValue.trim())a.push(n);}return a;}
   function pluralRu(n,f){var a=Math.abs(n)%100,b=a%10;if(a>10&&a<20)return f[2];if(b>1&&b<5)return f[1];if(b===1)return f[0];return f[2];}
@@ -1030,7 +1031,7 @@
   });
   // spend bonuses -> jump to tariffs with bonus applied
   document.getElementById('spendBonus').addEventListener('click',()=>{
-    if(bonus<=0){notify(L('Бонусов пока нет. Пригласи друга — и 10% его оплаты станут твоими бонусами.','No bonuses yet. Invite a friend — and 10% of their payment becomes your bonus.'));return;}
+    if(bonus<=0){notify(L('Бонусов пока нет. Пригласи друга — и 25% его оплаты станут твоими бонусами.','No bonuses yet. Invite a friend — and 25% of their payment becomes your bonus.'));return;}
     document.querySelector('.nav button[data-view="v-tariffs"]').click();
     const ub=document.getElementById('useBonus');if(ub)ub.checked=true;updatePay();
   });
@@ -1041,11 +1042,14 @@
   renderBonus();
 
   const STATUS_URL=(window.ORBIUM_STATUS_URL||'https://app.orbiumvpn.com/servers.json');
+  // Запасной список — только на случай, если подписка ещё не загрузилась.
+  // Реальные страны всегда приходят из ключа (см. parseTag).
   const SERVER_STATUS_FALLBACK=[
-    {name:'Германия', flag:'🇩🇪', servers:4, subtitle:'4 сервера · active', status:'online', recommended:true},
+    {name:'Германия', flag:'🇩🇪', servers:3, subtitle:'3 сервера · active', status:'online', recommended:true},
     {name:'Франция', flag:'🇫🇷', servers:2, subtitle:'2 сервера · active', status:'online', recommended:false},
-    {name:'Британия', flag:'🇬🇧', servers:1, subtitle:'1 сервер · active', status:'online', recommended:false},
-    {name:'Нидерланды', flag:'🇳🇱', servers:1, subtitle:'1 сервер · active', status:'online', recommended:false}
+    {name:'Нидерланды', flag:'🇳🇱', servers:1, subtitle:'1 сервер · active', status:'online', recommended:false},
+    {name:'Финляндия', flag:'🇫🇮', servers:1, subtitle:'1 сервер · active', status:'online', recommended:false},
+    {name:'Австрия', flag:'🇦🇹', servers:1, subtitle:'1 сервер · active', status:'online', recommended:false}
   ];
   let latestServerStatus=SERVER_STATUS_FALLBACK.slice();
   function serverMetricText(s){
@@ -1055,7 +1059,20 @@
     const base=s.subtitle||((s.status||'online')==='offline'?'offline':'1 сервер · active');
     return s.recommended?`${base} · ${L('рекомендован','recommended')}`:base;
   }
-  function renderServerStatus(servers){
+  // Разбираем подпись ссылки: «Orbium 🇦🇹 Австрия» / «Orbium 🇫🇷 Франция · резервный».
+  // Флаг и название берём как есть — новые страны появятся сами, без правки кода.
+  function parseTag(link){
+    var tag='';
+    try{tag=decodeURIComponent(String(link).split('#')[1]||'');}catch(e){tag=String(link).split('#')[1]||'';}
+    if(!tag)return null;
+    var reserve=/резерв|reserve/i.test(tag);
+    var flag='🌐';
+    try{var m=tag.match(/[\u{1F1E6}-\u{1F1FF}]{2}/u);if(m)flag=m[0];}catch(e){}
+    var name=tag.replace(/^\s*Orbium\s*/i,'').replace(flag,'')
+      .replace(/[·|].*$/,'').replace(/\s*\d+\s*$/,'').trim();
+    return {name:name||tag.trim(),flag:flag,reserve:reserve};
+  }
+  function renderServerStatus(servers,reserveN){
     const grid=document.getElementById('serverGrid');
     if(!grid)return;
     const list=(Array.isArray(servers)&&servers.length?servers:SERVER_STATUS_FALLBACK).slice();
@@ -1072,7 +1089,8 @@
     grid.innerHTML=list.map((s)=>{
       const cls=`hcountry${s.status==='offline'?' offline':''}${s.status==='online'&&s.load_percent>=75?' busy':''}${s.recommended?' rec':''}`;
       return `<div class="${cls}"><span class="hfl">${s.flag||'🌐'}</span><div class="hcn"><div class="hn">${s.name}</div><div class="hp">${serverSubtitle(s)}</div><div class="hm">${serverMetricText(s)}</div></div><span class="hst"></span></div>`;
-    }).join('');
+    }).join('')
+    + (reserveN>0?`<div class="hnote">${L('В ключе есть ещё '+reserveN+' '+pluralRu(reserveN,['запасной сервер','запасных сервера','запасных серверов'])+' — выбери любой из них, если основной не подключается.','Your key also has '+reserveN+' backup server'+(reserveN>1?'s':'')+' — pick one if the main server does not connect.')}</div>`:'');
   }
   async function loadServerStatus(){
     try{
@@ -1096,7 +1114,7 @@
     if(!k){notify(L('Ключ появится здесь после оплаты подписки. Выбери тариф на вкладке «Тарифы».','Your key appears here after you buy a subscription. Pick a plan on the “Plans” tab.'));return false;}
     copyText(k,btn);notify(COPY_GUIDE());return true;
   }
-  function COPY_GUIDE(){return L('Ключ скопирован. Открой Happ или Streisand → «+» → «Добавить подписку / из буфера» → вставь и подключайся.','Key copied. Open Happ or Streisand → “+” → “Add subscription / from clipboard” → paste and connect.');}
+  function COPY_GUIDE(){return L('Ключ скопирован. Открой приложение (Happ, INCY или Streisand) → «+» → «Добавить подписку из буфера» → вставь и подключайся.','Key copied. Open your app (Happ, INCY or Streisand) → “+” → “Add subscription from clipboard” → paste and connect.');}
   document.getElementById('copyLink').addEventListener('click',e=>{e.preventDefault();copyKeyOrWarn(e.currentTarget);});
   document.getElementById('keyBtn').addEventListener('click',e=>{copyKeyOrWarn(e.currentTarget);});
 
@@ -1176,22 +1194,30 @@
       var srvN=d.servers||(d.links?d.links.length:3);
       var el=document.getElementById('subDays');if(el)el.textContent=d.days;
       var chip=document.querySelector('.chipplan');if(chip){if(d.plan)chip.textContent=d.plan;chip.dataset.days=d.total||Math.max(d.days,30);}
-      var kEl=document.getElementById('subKey');if(kEl)kEl.textContent='Orbium VPN · '+srvN+' '+pluralRu(srvN,['сервер','сервера','серверов']);
       if(d.links&&d.links.length){
-        var byC={};
+        // Страну берём из подписи самой ссылки, а не из списка в коде:
+        // серверы и страны меняются, хардкод врал бы (Австрию показывал Германией).
+        var main=[],reserve=[];
         (d.links||[]).forEach(function(l){
-          var tag=decodeURIComponent(l.split('#')[1]||'');
-          var nm,fl;
-          if(/🇳🇱|Нидерл/.test(tag)){nm='Нидерланды';fl='🇳🇱';}
-          else if(/🇫🇷|Франц/.test(tag)){nm='Франция';fl='🇫🇷';}
-          else if(/🇬🇧|Британ|Англ/.test(tag)){nm='Британия';fl='🇬🇧';}
-          else{nm='Германия';fl='🇩🇪';}
-          if(!byC[nm])byC[nm]={name:nm,flag:fl,count:0};
-          byC[nm].count++;
+          var p=parseTag(l);
+          if(!p)return;
+          (p.reserve?reserve:main).push(p);
+        });
+        var byC={};
+        (main.length?main:reserve).forEach(function(p){
+          if(!byC[p.name])byC[p.name]={name:p.name,flag:p.flag,count:0};
+          byC[p.name].count++;
         });
         var srv=Object.keys(byC).map(function(k,i){var c=byC[k];
           return {name:c.name,flag:c.flag,servers:c.count,subtitle:c.count+' '+pluralRu(c.count,['сервер','сервера','серверов'])+' · active',load_percent:30,status:'online',recommended:i===0};});
-        if(typeof renderServerStatus==='function')renderServerStatus(srv);
+        if(srv.length&&typeof renderServerStatus==='function')renderServerStatus(srv,reserve.length);
+        srvN=(main.length||d.links.length);
+        var cN=Object.keys(byC).length;
+        var kEl2=document.getElementById('subKey');
+        if(kEl2)kEl2.textContent='Orbium VPN · '+srvN+' '+pluralRu(srvN,['сервер','сервера','серверов'])+(cN?' · '+cN+' '+pluralRu(cN,['страна','страны','стран']):'');
+      } else {
+        var kEl=document.getElementById('subKey');
+        if(kEl)kEl.textContent='Orbium VPN · '+srvN+' '+pluralRu(srvN,['сервер','сервера','серверов']);
       }
       if(typeof renderDays==='function')renderDays();
     }
