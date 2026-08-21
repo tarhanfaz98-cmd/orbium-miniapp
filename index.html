@@ -767,6 +767,10 @@
     moveInd(navInd,b);
     views.forEach(v=>v.classList.toggle('active',v.id===b.dataset.view));
     if(b.dataset.view==='v-more')moveLangInd();
+    // бонусы нужны на «Пригласить» (баланс) и на «Тарифах» (списание) — грузим там
+    if(b.dataset.view==='v-ref'||b.dataset.view==='v-tariffs'){
+      if(typeof window.loadBonusOnce==='function')window.loadBonusOnce();
+    }
     document.querySelector('.scroll').scrollTop=0;
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged();}catch(e){}
   }));
@@ -1240,9 +1244,16 @@
     if(ru&&uid)ru.textContent='t.me/Orbium_77bot?start='+uid;
     var uname='';try{uname=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user&&tg.initDataUnsafe.user.username)||'';}catch(e){}
     var _un=document.getElementById('uchipName');if(_un)_un.textContent=uname?('@'+uname):(uid?('id'+uid.slice(-6)):'Orbium');
-    try{
-      var initData=(tg&&tg.initData)||'';
-      if(initData){
+    // Бонусы тянем не при загрузке, а при первом заходе на вкладку, где они видны.
+    // Большинство открывает только «Главную» — лишний запрос на каждого посетителя
+    // стоит квоты бэкенда, а показать ему нечего.
+    var bonusLoaded=false;
+    window.loadBonusOnce=function(){
+      if(bonusLoaded)return;
+      bonusLoaded=true;
+      try{
+        var initData=(tg&&tg.initData)||'';
+        if(!initData)return;
         fetch('https://tarhanfaz98.app.n8n.cloud/webhook/orbium-bonus-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({initData:initData})})
           .then(function(r){return r.json();})
           .then(function(d){if(d){bonus=Number(d.balance||0);refEarnedTotal=Number(d.earned||0);refInvited=Number(d.invited||0);
@@ -1250,9 +1261,9 @@
             if(d.minWithdraw)minWithdraw=Number(d.minWithdraw);
             holdUntilRu=String(d.holdUntilRu||'');
             if(typeof renderBonus==='function')renderBonus();}})
-          .catch(function(){});
-      }
-    }catch(e){}
+          .catch(function(){bonusLoaded=false;});
+      }catch(e){bonusLoaded=false;}
+    };
   })();
   applyLang(lang);  // apply saved language on load
 </script>
