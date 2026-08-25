@@ -69,13 +69,17 @@
 
   <div id="apps"></div>
 
+  <div class="divider">шаг 2 — умная маршрутизация</div>
+  <p class="sub" style="margin-bottom:16px;font-size:14px;">Российские сайты и банки будут работать напрямую, мимо VPN — быстрее и без сбоев со входом.</p>
+  <div id="routing"></div>
+
   <div class="divider">или вручную</div>
   <div class="copybox">
     <code id="keyText">—</code>
     <button id="copyBtn">Копировать</button>
   </div>
 
-  <p class="hint">Если приложение не открылось — установи его, вернись сюда и нажми снова.</p>
+  <p class="hint">Если приложение не открылось — значит оно не установлено. Поставь Happ или INCY, вернись сюда и нажми снова.</p>
 </div>
 
 <script>
@@ -83,6 +87,14 @@
   var params = new URLSearchParams(location.search);
   var sub = params.get('sub') || '';
   var apps = document.getElementById('apps');
+
+  // Если приложение указано в адресе (?app=happ или ?app=incy) — открываем его
+  // сразу, без экрана выбора. Так короче: у конкурентов ровно этот приём.
+  var want = (params.get('app') || '').toLowerCase();
+  var SCHEMES = { happ: 'happ://add/', incy: 'incy://add/' };
+  if (sub && SCHEMES[want]) {
+    location.replace(SCHEMES[want] + sub);
+  }
 
   if (!sub) {
     apps.innerHTML = '<div class="err">Ключ не передан. Открой эту страницу по ссылке из бота Orbium.</div>';
@@ -104,6 +116,29 @@
              '<span class="tt">' + a.name + '<small>' + a.note + '</small></span>' +
              '<span class="go">›</span></a>';
     }).join('');
+  }
+
+  // Профиль маршрутизации общий для всех. INCY умеет держать его
+  // автообновляемым, Happ принимает как разовый пакет в base64.
+  var RT_URL = 'https://sub.videoedge.ru:8443/routing';
+  var rt = document.getElementById('routing');
+  if (rt) {
+    var incyLink = 'incy://autorouting/add/' + RT_URL;
+    rt.innerHTML =
+      '<a class="app" href="' + incyLink + '">' +
+      '<span class="ic">I</span><span class="tt">Включить в INCY<small>обновляется автоматически</small></span><span class="go">›</span></a>' +
+      '<a class="app" id="rtHapp" href="#"><span class="ic">H</span>' +
+      '<span class="tt">Включить в Happ<small>подготовка…</small></span><span class="go">›</span></a>';
+
+    fetch(RT_URL, {cache:'no-store'}).then(function(r){ return r.text(); }).then(function(t){
+      var b64 = btoa(unescape(encodeURIComponent(t)));
+      var a = document.getElementById('rtHapp');
+      a.href = 'happ://routing/add/' + b64;
+      a.querySelector('small').textContent = 'настройки от Orbium';
+    }).catch(function(){
+      var a = document.getElementById('rtHapp');
+      if (a) a.querySelector('small').textContent = 'сейчас недоступно, попробуй позже';
+    });
   }
 
   document.getElementById('copyBtn').addEventListener('click', function(){
