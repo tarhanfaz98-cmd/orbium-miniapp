@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orbium — подключить ключ</title>
+<style>
+  :root{
+    --bg:#06070f; --card:rgba(255,255,255,.05); --line:rgba(255,255,255,.11);
+    --txt:#EDF1FC; --dim:#9AA5C8; --mut:#6C769B;
+    --blue:#5B8CFF; --violet:#9A6BFF; --cyan:#46E6FF; --green:#3CE6A6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{
+    min-height:100dvh; background:
+      radial-gradient(700px 500px at 80% -8%,rgba(91,140,255,.16),transparent 62%),
+      radial-gradient(560px 420px at 5% 10%,rgba(154,107,255,.13),transparent 64%),
+      var(--bg);
+    color:var(--txt); font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;
+    padding:32px 20px calc(40px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:520px;margin:0 auto;}
+  .orb{width:64px;height:64px;border-radius:50%;margin:0 auto 22px;position:relative;
+    background:radial-gradient(60% 60% at 36% 30%,#e2f2ff,#46e6ff 24%,#5b8cff 50%,#9a6bff 74%,#241a4e);
+    box-shadow:0 10px 30px rgba(91,140,255,.55),0 0 50px rgba(70,230,255,.25),inset 0 1px 3px rgba(255,255,255,.8);}
+  h1{font-size:26px;font-weight:800;letter-spacing:-.03em;text-align:center;margin-bottom:10px;text-wrap:balance;}
+  .sub{font-size:15px;color:var(--dim);text-align:center;line-height:1.5;margin-bottom:28px;text-wrap:balance;}
+
+  .app{
+    display:flex;align-items:center;gap:14px;width:100%;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px 17px;margin-bottom:11px;color:var(--txt);text-decoration:none;
+    font-family:inherit;font-size:16px;font-weight:650;letter-spacing:-.01em;
+    transition:transform .18s,border-color .18s,background .18s;
+  }
+  .app:active{transform:scale(.975);background:rgba(91,140,255,.14);border-color:rgba(91,140,255,.5);}
+  .app .ic{width:42px;height:42px;border-radius:12px;flex:0 0 auto;display:grid;place-items:center;
+    font-size:18px;font-weight:800;letter-spacing:-.02em;
+    background:linear-gradient(150deg,rgba(91,140,255,.28),rgba(154,107,255,.18));
+    border:1px solid rgba(91,140,255,.32);color:#CFE0FF;}
+  .app .tt{flex:1;min-width:0;}
+  .app .tt small{display:block;font-size:12.5px;font-weight:500;color:var(--mut);margin-top:3px;letter-spacing:0;}
+  .app .go{color:var(--mut);font-size:20px;}
+
+  .divider{display:flex;align-items:center;gap:12px;margin:24px 0 16px;color:var(--mut);font-size:12.5px;
+    letter-spacing:.12em;text-transform:uppercase;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+
+  .copybox{background:rgba(0,0,0,.32);border:1px solid var(--line);border-radius:14px;padding:13px 14px;
+    display:flex;align-items:center;gap:11px;}
+  .copybox code{flex:1;min-width:0;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--dim);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .copybox button{border:none;background:linear-gradient(180deg,#84aaff,#5b8cff 55%,#3f74ee);color:#fff;
+    font-family:inherit;font-size:14px;font-weight:700;padding:11px 16px;border-radius:11px;cursor:pointer;
+    transition:transform .18s;}
+  .copybox button:active{transform:scale(.94);}
+  .copybox button.done{background:linear-gradient(180deg,#7dffcf,#3ce6a6);color:#04140f;}
+
+  .hint{font-size:13px;color:var(--mut);line-height:1.55;margin-top:18px;text-align:center;text-wrap:balance;}
+  .err{background:rgba(255,107,122,.1);border:1px solid rgba(255,107,122,.32);color:#FFC9CE;
+    border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="orb"></div>
+  <h1>Подключить ключ</h1>
+  <p class="sub">Выбери приложение — ключ добавится сам, копировать ничего не нужно.</p>
+
+  <div id="apps"></div>
+
+  <div class="divider">или вручную</div>
+  <div class="copybox">
+    <code id="keyText">—</code>
+    <button id="copyBtn">Копировать</button>
+  </div>
+
+  <p class="hint">Если приложение не открылось — установи его, вернись сюда и нажми снова.</p>
+</div>
+
+<script>
+  // Ключ приходит в адресе: open.html?sub=<ссылка-подписка>
+  var params = new URLSearchParams(location.search);
+  var sub = params.get('sub') || '';
+  var apps = document.getElementById('apps');
+
+  if (!sub) {
+    apps.innerHTML = '<div class="err">Ключ не передан. Открой эту страницу по ссылке из бота Orbium.</div>';
+    document.querySelector('.divider').style.display = 'none';
+    document.querySelector('.copybox').style.display = 'none';
+  } else {
+    document.getElementById('keyText').textContent = sub;
+
+    // Схема incy://add описана в документации INCY, у Happ работает так же.
+    // Показываем только эти два приложения — ими пользуются наши клиенты.
+    var list = [
+      {name:'Happ',  tag:'H', note:'iPhone, Android, компьютер',        link:'happ://add/' + sub},
+      {name:'INCY',  tag:'I', note:'iPhone из России, без смены региона', link:'incy://add/' + sub}
+    ];
+
+    apps.innerHTML = list.map(function(a){
+      return '<a class="app" href="' + a.link + '">' +
+             '<span class="ic">' + a.tag + '</span>' +
+             '<span class="tt">' + a.name + '<small>' + a.note + '</small></span>' +
+             '<span class="go">›</span></a>';
+    }).join('');
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', function(){
+    var btn = this;
+    var done = function(){
+      btn.textContent = 'Скопировано';
+      btn.classList.add('done');
+      setTimeout(function(){ btn.textContent = 'Копировать'; btn.classList.remove('done'); }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(sub).then(done, function(){});
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = sub; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch(e){}
+      document.body.removeChild(ta);
+    }
+  });
+</script>
+</body>
+</html>
