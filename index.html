@@ -907,7 +907,18 @@
           var hint=document.getElementById('payHint');if(hint)hint.textContent=L('Нажми кнопку — откроется страница оплаты. Там выбери способ: СБП или криптовалюта.','Tap the button to open the payment page and choose a method.');
           var amt=document.getElementById('payAmount');if(amt)amt.textContent=shownPrice;
           payShow();
-          try{if(tg&&tg.openLink)tg.openLink(d.url);}catch(e){}
+          // Пробуем открыть оплату сами, ДВУМЯ путями. Способ Телеграма молча
+          // игнорируется, когда вызван после ответа сервера, а не в момент
+          // касания — поэтому нужен запасной. Он был здесь до 25 августа и
+          // пропал вместе с добавлением шторки: шторку завели как замену, но
+          // выбили подпорку, которая и заставляла оплату открываться сама.
+          // Шторка остаётся — если оба пути проглотят, человек нажмёт кнопку.
+          try{
+            if(tg&&tg.openLink)tg.openLink(d.url);
+            else window.open(d.url,'_blank');
+          }catch(e){
+            try{window.open(d.url,'_blank');}catch(e2){}
+          }
         }
         else payError(L('Сервер не вернул ссылку на оплату.','Server did not return a payment link.'));
       })
